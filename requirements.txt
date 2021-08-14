@@ -1,0 +1,5 @@
+# camelot-py
+# ghostscript.exe
+# ghostscript
+# matplotlib
+# excalibur-py

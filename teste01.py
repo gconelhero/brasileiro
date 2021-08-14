@@ -3,6 +3,7 @@ import tabula
 import pandas as pd
 import json
 import re
+from tabulate import tabulate
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -13,7 +14,8 @@ for arquivo in arquivos:
     pdf = f'.\\PDFs\\{arquivo}' #".\\PDFs\\Jogo17.pdf"
 
     leitor = open(pdf, 'rb')
-    leitor = tabula.read_pdf(pdf, pages='all')
+    leitor = tabula.read_pdf(pdf, pages='all', multiple_tables = True)
+    print(tabulate(leitor[3].iloc[1:], tablefmt="pretty"))
 
     df = pd.DataFrame(leitor[0])
     df2 = pd.DataFrame(leitor[1])
@@ -22,8 +24,9 @@ for arquivo in arquivos:
     df5 = pd.DataFrame(leitor[4])
     df6 = pd.DataFrame(leitor[5])
     df7 = pd.DataFrame(leitor[6])
-    print(df7)
-
+    #print(df7)
+    #print(list(df7.columns))
+    #print(df4)
 
     
     count = 1
@@ -34,12 +37,12 @@ for arquivo in arquivos:
             gol['Minuto'] = df6[df6.columns[0]].iloc[count]
             gol['Tempo'] = df6[df6.columns[1]].iloc[count]
             gol['Tipo'] = df6[df6.columns[3]].iloc[count]
-            gol['jogador'] = f'No {df6[df6.columns[2]].iloc[count]} / {df6[df6.columns[4]].iloc[count]}'
+            gol['jogador'] = f'No {df6[df6.columns[2]].iloc[count]} - {df6[df6.columns[4]].iloc[count]}'
             gol['Equipe'] = df6[df6.columns[6]].iloc[count]
             gols[count] = gol
             count += 1
         except Exception as erro:
-            print(f'{type(erro)}\n{erro}\n{pdf}, Gols')
+            #print(f'{type(erro)}\n{erro}\n{pdf}, Gols')
             gols = {}
             pass
 
