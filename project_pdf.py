@@ -15,6 +15,8 @@ for arquivo in arquivos:
     pag_dois.extractText()
     pag_tres.extractText()
     
+    from extract import ObjetoJogo
+    
 
     jogo_num = int(pag_um.extractText().splitlines()[0].split(': ')[-1])
     campeonato = pag_um.extractText().splitlines()[4]
@@ -23,7 +25,10 @@ for arquivo in arquivos:
     data = pag_um.extractText().splitlines()[10]
     hora = pag_um.extractText().splitlines()[12]
     estadio = pag_um.extractText().splitlines()[14]
-
+    
+    ObjetoJogo.parte_um(pag_um)
+    ObjetoJogo.parte_dois(pag_dois)
+    
     flag = ['Arbitragem', 'Cronologia', 'Relação de Jogadores', 'Comissão Técnica', 
             'Gols', 'Cartões Amarelos', 'Cartões Vermelhos', 'Ocorrências / Observações',
             'Substituições',]
@@ -140,7 +145,6 @@ for arquivo in arquivos:
         except:
             pass
 
-    print(cartoes_vermelho)    
     
     count = -1
     cart = {}
@@ -303,7 +307,7 @@ for arquivo in arquivos:
                     'Cartões vermelho': cartoes_vermelho}
                     }
 
-    print(json.dumps(json_model, sort_keys=False, indent=4, separators=(',', ': ')))
+    #print(json.dumps(json_model, sort_keys=False, indent=4, separators=(',', ': ')))
 '''
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
