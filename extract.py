@@ -23,7 +23,6 @@ reject = ['Arbitragem', 'Cronologia', '1º Tempo', '2º Tempo',
 class ExtractJogo:
 
     def sumula(arquivo):
-        
         pdf = PdfFileReader(arquivo)
         paginas = ''
         for i in range(pdf.getNumPages()):
@@ -89,12 +88,24 @@ class ExtractJogo:
                     cart_amar.append(i)
                 if i == flag[6]:
                     count = 6
+                if i == flag[7]:
+                    count = -1000
                 if count == 6 and i not in reject:
-                    cart_ver.append(i)
-
-            except:
+                    print(i)
+                    if re.search('Publicação da Súmula:', i):
+                        pass
+                    elif re.search('Nada houve de anormal.', i):
+                        pass
+                    elif re.search('Emissão desta via:', i):
+                        pass
+                    elif re.search('2 / 3', i):
+                        pass
+                    else:
+                        cart_ver.append(i)
+            except: 
                 pass
-    
+        
+
     
         count = -1000
         obs = []
