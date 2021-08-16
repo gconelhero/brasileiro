@@ -6,7 +6,7 @@ Objstivos:
 * Criar uma API para compartilhar esses dados com outras aplicações.
 
 Radando o projeto:
-`git clone https://github.com/CTECHSUL/brasileiro`
-`cd brasileiro`
-`python3 -m pip install requirements.txt`
+`git clone https://github.com/CTECHSUL/brasileiro`<br>
+`cd brasileiro`<br>
+`python3 -m pip install requirements.txt`<br>
 `python3 et_main.py`
