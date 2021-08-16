@@ -99,6 +99,32 @@ class ObjetoJogo:
                             
             except:
                 pass
+
+
+        count = 0
+        chave = 0
+        valor = 1
+        comissao_mandante = {}
+        comissao_visitante = {}
+        for i in comissao:
+            if re.search('\D* / \D+', i):
+                count += 1
+            elif count == 1:
+                try:
+                    if list(comissao_mandante.values())[-1] == '':
+                        comissao_mandante[list(comissao_mandante.keys())[-1]] = i
+                    else:
+                        comissao_mandante[i] = ''    
+                except:
+                    comissao_mandante[i] = ''
+            elif count == 2:
+                try:
+                    if list(comissao_visitante.values())[-1] == '':
+                        comissao_visitante[list(comissao_visitante.keys())[-1]] = i
+                    else:
+                        comissao_visitante[i] = ''    
+                except:
+                    comissao_visitante[i] = ''
     
 
         obj_gols = {}
@@ -119,6 +145,38 @@ class ObjetoJogo:
             gol['Equipe'] = gols[valor]
             valor += 1
             obj_gols[len(obj_gols) + 1] = gol
+
+
+        count = -1
+        cart = {}
+        cartoes_amarelo = {}
+        valor = 0
+        motivo = []
+        for i in cart_amar:
+            cart = {}
+            if re.search('\d+:\d+', i):
+                count = 0
+                if count == 0:
+                    cart['Minuto'] = cart_amar[valor]
+                    valor += 1
+                    cart['Tempo'] = cart_amar[valor]
+                    valor += 1
+                    cart['Nº'] = cart_amar[valor]
+                    valor += 1
+                    cart['Nome'] = cart_amar[valor]
+                    valor += 1
+                    cart['Equipe'] = cart_amar[valor]
+                    valor += 1
+            if re.search('Motivo:', i):
+                count = 1
+            if count == 1:
+                motivo.append(cart_amar[valor])
+                valor += 1
+            if count == 0 and motivo != []:
+                cart['Motivo'] = ' '.join(motivo)
+                motivo = []
+                cartoes_amarelo[len(cartoes_amarelo) + 1] = cart
+
 
         count = -1
         cart = {}
@@ -153,63 +211,38 @@ class ObjetoJogo:
             except:
                 pass
 
-        
-        count = -1
-        cart = {}
-        cartoes_amarelo = {}
+        try:
+            observacoes_todas = ' '.join([elem for elem in obs[1:-1]])
+            eventuais = observacoes_todas.split('Observações Eventuais')[1]
+            assistente = observacoes_todas.split('Relatório do Assistente')[1]
+            observacoes = observacoes_todas.split('Observações Eventuais')[0]
+        except:
+            observacoes_todas = ''
+            eventuais = ''
+            assistente = ''
+            observacoes = ''
+        count = -1000
         valor = 0
-        motivo = []
-        for i in cart_amar:
-            cart = {}
-            if re.search('\d+:\d+', i):
-                count = 0
-                if count == 0:
-                    cart['Minuto'] = cart_amar[valor]
-                    valor += 1
-                    cart['Tempo'] = cart_amar[valor]
-                    valor += 1
-                    cart['Nº'] = cart_amar[valor]
-                    valor += 1
-                    cart['Nome'] = cart_amar[valor]
-                    valor += 1
-                    cart['Equipe'] = cart_amar[valor]
-                    valor += 1
-            if re.search('Motivo:', i):
-                count = 1
-            if count == 1:
-                motivo.append(cart_amar[valor])
+        substituir = {}
+        substituicoes = {}
+        for i in range(int(len(substituicao) / 5)):
+            if re.search('Publicação da Súmula', substituicao[valor].split(':')[0]):
+                break
+            else:
+                substituir['Minuto'] = substituicao[valor]
                 valor += 1
-            if count == 0 and motivo != []:
-                cart['Motivo'] = ' '.join(motivo)
-                motivo = []
-                cartoes_amarelo[len(cartoes_amarelo) + 1] = cart
-            
-            
-        count = 0
-        chave = 0
-        valor = 1
-        comissao_mandante = {}
-        comissao_visitante = {}
-        for i in comissao:
-            if re.search('\D* / \D+', i):
-                count += 1
-            elif count == 1:
-                try:
-                    if list(comissao_mandante.values())[-1] == '':
-                        comissao_mandante[list(comissao_mandante.keys())[-1]] = i
-                    else:
-                        comissao_mandante[i] = ''    
-                except:
-                    comissao_mandante[i] = ''
-            elif count == 2:
-                try:
-                    if list(comissao_visitante.values())[-1] == '':
-                        comissao_visitante[list(comissao_visitante.keys())[-1]] = i
-                    else:
-                        comissao_visitante[i] = ''    
-                except:
-                    comissao_visitante[i] = ''
+                substituir['Tempo'] = substituicao[valor]
+                valor += 1
+                substituir['Equipe'] = substituicao[valor]
+                valor += 1
+                substituir['Entrou'] = substituicao[valor]
+                valor += 1
+                substituir['Saiu'] = substituicao[valor]
+                valor += 1
+            substituicoes[len(substituicoes)] = substituir
+        print(substituicoes)
 
+            
         jogo_model = {'Jogo': {'No': jogo_num, 'Campeonato': campeonato, 'Rodada': rodada,
                     'Jogo': jogo, 'Data': data, 'Horário': hora, 'Estádio': estadio,
                     'Arbitragem': arbitragem, 'Cronologia': cronologia,
@@ -218,7 +251,9 @@ class ObjetoJogo:
                     'Visitante': {'Jogadores': jogadores_visitante,
                     'Comissão': comissao_visitante},
                     'Gols': obj_gols, 'Cacrtões amarelo': cartoes_amarelo,
-                    'Cartões vermelho': cartoes_vermelho}
+                    'Cartões vermelho': cartoes_vermelho, 'OBS': observacoes,
+                    'OBS eventuais': eventuais, 'OBS assistente': assistente,
+                    'Substituições': substituicoes}
                     }
 
         return jogo_model

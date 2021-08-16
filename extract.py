@@ -16,8 +16,9 @@ reject = ['Arbitragem', 'Cronologia', '1º Tempo', '2º Tempo',
             'NR = Normal | PN = Pênalti | CT = Contra | FT = Falta',
             'Tempo', '1T/2T', 'Nº', 'Tipo', 'Nome do Jogador', 'Equipe',
             'Cartões Amarelos', 'Cartões Vermelhos',
-            'AT - Assistente TécnicoAT - Assistente Técnico','Página 2/3'
-            'Entrou', 'Saiu',]
+            'AT - Assistente TécnicoAT - Assistente Técnico','Página 2/3',
+            'Entrou', 'Saiu', 'Substituições', 'Página 3/3', '3 / 3', 
+            'Powered by TCPDF (www.tcpdf.org)',]
 
 class ExtractJogo:
 
