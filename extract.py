@@ -91,7 +91,6 @@ class ExtractJogo:
                 if i == flag[7]:
                     count = -1000
                 if count == 6 and i not in reject:
-                    print(i)
                     if re.search('Publicação da Súmula:', i):
                         pass
                     elif re.search('Nada houve de anormal.', i):

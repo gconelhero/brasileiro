@@ -190,7 +190,6 @@ class ObjetoJogo:
                 cartoes_amarelo[len(cartoes_amarelo) + 1] = cart
                 cart = {}
                 
-        print(cartoes_amarelo)
 
         count = -1
         cart = {}
@@ -208,10 +207,9 @@ class ObjetoJogo:
                         valor += 1
                         cart['Nº'] = cart_ver[valor]
                         valor += 1
-                        cart['Nome'] = cart_ver[valor]
-                        valor += 1
-                        cart['Equipe'] = cart_ver[valor]
-                        valor += 1
+                        cart['Nome'] = cart_ver[valor].split(' - ')[0]
+                        cart['Equipe'] = cart_ver[valor].split(' - ')[-1]
+                        valor += 2
                 if re.search('Motivo:', i) :
                     count = 1
                 if count == 1:
@@ -231,6 +229,7 @@ class ObjetoJogo:
                     cart = {}
             except:
                 pass
+        print(cartoes_vermelho)
         
         try:
             observacoes_todas = ' '.join([elem for elem in obs[0:]])

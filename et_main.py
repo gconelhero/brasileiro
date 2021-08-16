@@ -11,4 +11,4 @@ for arquivo in arquivos:
                             ensure_ascii=False, sort_keys=False, 
                             indent=4, separators=(',', ': '))
     #print(objeto_jogo)
-    #print(objeto_jogo[0:35])
+    print(objeto_jogo[0:35])
