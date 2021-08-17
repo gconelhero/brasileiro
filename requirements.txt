@@ -1,3 +1,4 @@
 PyPDF2
 requests
 filetype
+pymongo
