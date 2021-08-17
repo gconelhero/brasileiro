@@ -27,7 +27,6 @@ class ObjetoJogo:
             substituicao = objeto[9]
 
         except Exception as erro:
-            print(erro)
             pass
 
 
@@ -46,14 +45,29 @@ class ObjetoJogo:
         cronologia = {}
         for i in range(len(lista_cronologia)):
             
-            if re.search('Resultado do 1º Tempo', lista_cronologia[chave]):
-                cronologia['Resultado 1º Tempo'] = lista_cronologia[chave].split(':')[-1]
-                cronologia['Resultado Final'] = lista_cronologia[valor].split(':')[-1]
+            if re.search('Resultado do 1º Tempo', lista_cronologia[valor]):
+                cronologia['Resultado 1º Tempo'] = lista_cronologia[valor].split(':')[-1]
+                cronologia['Resultado Final'] = lista_cronologia[valor + 1].split(':')[-1]
                 break
             else:
-                cronologia[lista_cronologia[chave].replace(':', '')] = lista_cronologia[valor]
-                chave += 2
-                valor += 2
+                cronologia['Entrada Mandante 1T'] = lista_cronologia[valor]
+                cronologia['Atraso Mandante 1T'] = lista_cronologia[valor + 2]
+                cronologia['Entrada Visitante 1T'] = lista_cronologia[valor + 4]
+                cronologia['Atraso Visitante 1T'] = lista_cronologia[valor + 6]
+                cronologia['Início 1T'] = lista_cronologia[valor + 8]
+                cronologia['Atraso Início 1T'] = lista_cronologia[valor + 10]
+                cronologia['Término 1T'] = lista_cronologia[valor + 12]
+                cronologia['Acréscimo 1T'] = lista_cronologia[valor + 14]
+                cronologia['Entrada Mandante 2T'] = lista_cronologia[valor + 16]
+                cronologia['Atraso Mandante 2T'] = lista_cronologia[valor + 18]
+                cronologia['Entrada Visitante 2T'] = lista_cronologia[valor + 20]
+                cronologia['Atraso Visitante 2T'] = lista_cronologia[valor + 22]
+                cronologia['Início 2T'] = lista_cronologia[valor + 24]
+                cronologia['Atraso Início 2T'] = lista_cronologia[valor + 26]
+                cronologia['Término 2T'] = lista_cronologia[valor + 28]
+                cronologia['Acréscimo 2T'] = lista_cronologia[valor + 30]
+                valor += 31
+
         
         chave = 0
         valor = 0
@@ -229,7 +243,7 @@ class ObjetoJogo:
                     cart = {}
             except:
                 pass
-        print(cartoes_vermelho)
+
         
         try:
             observacoes_todas = ' '.join([elem for elem in obs[0:]])

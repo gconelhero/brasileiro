@@ -1,14 +1,35 @@
 import os
 import json
+import shutil
+import sys, traceback
 from extract import ExtractJogo
 from transform import ObjetoJogo
 
+
 arquivos = os.listdir("./PDFs/")
-for arquivo in arquivos:
-    sumula = ExtractJogo.sumula(f"./PDFs/{arquivo}")
-    jogo = ObjetoJogo.transform(sumula)
-    objeto_jogo = json.dumps(jogo, 
-                            ensure_ascii=False, sort_keys=False, 
-                            indent=4, separators=(',', ': '))
-    print(objeto_jogo)
-    #print(objeto_jogo[0:35])
+
+class Etl:
+    
+    def etMain(arquivo):
+        try:
+            print(arquivo) # TERMINAL
+            sumula = ExtractJogo.sumula(f"./PDFs/{arquivo}")
+            
+            jogo = ObjetoJogo.transform(sumula)
+            objeto_jogo = json.dumps(jogo, 
+                                    ensure_ascii=False, sort_keys=False, 
+                                    indent=4, separators=(',', ': '))
+
+            
+            with open(f'./json_files/{arquivo[:-4]}.json', 'w') as json_file:
+                json_file.write(objeto_jogo)
+            
+            os.remove(f"./PDFs/{arquivo}")
+                
+        except:
+            with open('log.txt',  'a') as log:
+                log.write(f"\n{arquivo}:\n")
+                traceback.print_exc(file=log)
+                traceback.print_exc(file=sys.stdout)
+            
+            shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")

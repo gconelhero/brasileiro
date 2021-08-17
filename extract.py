@@ -1,6 +1,5 @@
-import os
 import re
-import json
+import logging
 from PyPDF2 import PdfFileReader
 
 flag = ['Arbitragem', 'Cronologia', 'Relação de Jogadores', 'Comissão Técnica', 
@@ -28,10 +27,11 @@ class ExtractJogo:
         for i in range(pdf.getNumPages()):
             pagina = pdf.getPage(i)
             paginas += pagina.extractText()
+        
 
         pag_um = pdf.getPage(0)
 
-        jogo_num = int(pag_um.extractText().splitlines()[0].split(': ')[-1])
+        jogo_num = int(pag_um.extractText().splitlines()[0].split(':')[-1])
         campeonato = pag_um.extractText().splitlines()[4]
         rodada = int(pag_um.extractText().splitlines()[6])
         jogo = pag_um.extractText().splitlines()[8]
