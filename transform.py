@@ -44,7 +44,6 @@ class ObjetoJogo:
         valor = 1
         cronologia = {}
         for i in range(len(lista_cronologia)):
-            
             if re.search('Resultado do 1º Tempo', lista_cronologia[valor]):
                 cronologia['Resultado 1º Tempo'] = lista_cronologia[valor].split(':')[-1]
                 cronologia['Resultado Final'] = lista_cronologia[valor + 1].split(':')[-1]
@@ -72,21 +71,24 @@ class ObjetoJogo:
         chave = 0
         valor = 0
         jogador = {}
+        mandante = ''
+        visitante = ''
         jogadores_mandante = {}
         jogadores_visitante = {}
         loop = int(len(jogadores) / 6)
+        
         for i in range(len(jogadores) - valor): # ARRUMAR O RANGE... MUITO ALTO!
             try:
                 jogador = {}
                 if re.search('\D* / \D+', jogadores[valor]):
-                    if jogadores_mandante != {}:
-                        jogadores_visitante['Clube'] = jogadores[valor]
+                    if mandante != '':
+                        visitante = jogadores[valor]
                         valor += 1
                     else:
-                        jogadores_mandante['Clube'] = jogadores[valor]
+                        mandante = jogadores[valor]
                         valor += 1
                 
-                elif jogadores_visitante != {}:
+                elif visitante != '':
                     jogador['Nº'] = int(jogadores[valor])
                     valor += 1
                     jogador['Apelido'] = jogadores[valor]
@@ -99,7 +101,7 @@ class ObjetoJogo:
                     valor += 1
                     jogador['CBF'] = int(jogadores[valor])
                     valor += 1
-                    jogadores_visitante[len(jogadores_visitante)] = jogador
+                    jogadores_visitante[len(jogadores_visitante) + 1] = jogador
                     
                 else:
                     jogador['Nº'] = int(jogadores[valor])
@@ -114,7 +116,7 @@ class ObjetoJogo:
                     valor += 1
                     jogador['CBF'] = int(jogadores[valor])
                     valor += 1
-                    jogadores_mandante[len(jogadores_mandante)] = jogador
+                    jogadores_mandante[len(jogadores_mandante) + 1] = jogador
                             
             except:
                 pass
@@ -262,7 +264,7 @@ class ObjetoJogo:
         substituicoes = {}
         for i in range(len(substituicao)):
             if re.search('Publicação da Súmula', substituicao[valor].split(':')[0]):
-                break # PADRÃO DE STRING PARA INTERROMPER O LOOP!! FUNCIONOU
+                break # PADRÃO DE STRING PARA INTERROMPER O LOOP
             else:
                 substituir['Minuto'] = substituicao[valor]
                 valor += 1
@@ -280,16 +282,14 @@ class ObjetoJogo:
         jogo_model = {'Jogo': {'No': jogo_num, 'Campeonato': campeonato, 'Rodada': rodada,
                     'Jogo': jogo, 'Data': data, 'Horário': hora, 'Estádio': estadio,
                     'Arbitragem': arbitragem, 'Cronologia': cronologia,
-                    'Mandante': {'Jogadores': jogadores_mandante, 
+                    'Mandante':{'Clube': mandante,'Jogadores': jogadores_mandante, 
                     'Comissão': comissao_mandante},
-                    'Visitante': {'Jogadores': jogadores_visitante,
+                    'Visitante':{'Clube': visitante,'Jogadores': jogadores_visitante,
                     'Comissão': comissao_visitante},
-                    'Gols': obj_gols, 'Cacrtões amarelo': cartoes_amarelo,
-                    'Cartões vermelho': cartoes_vermelho, 
+                    'Gols': obj_gols, 'Cartões amarelo': cartoes_amarelo,
+                    'Cartões vermelho': cartoes_vermelho,
                     'Substituições': substituicoes, 'OBS': observacoes,
-                    'OBS eventuais': eventuais, 'OBS assistente': assistente,
-                    }
-                    }
+                    'OBS eventuais': eventuais, 'OBS assistente': assistente,}}
 
         return jogo_model
 
