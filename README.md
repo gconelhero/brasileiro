@@ -9,4 +9,4 @@ Radando o projeto:<br>
 `git clone https://github.com/CTECHSUL/brasileiro`<br>
 `cd brasileiro`<br>
 `python3 -m pip install -r requirements.txt`<br>
-`python3 et_main.py`
+`python3 scraper.py`
