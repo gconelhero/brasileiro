@@ -14,10 +14,12 @@ Radando o projeto:<br>
 Instalando e configurando o MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
+
 DataBase:<br>
 `brasileiro`<br>
 Collection:<br>
 `jogos`<br>
+
 Altere os parâmetros de conexão em `mongo_load.py`:<br>
 `host='<IP DO SEU MongoDB>'`<br>
 Inserindo os arquivos JSON na collection:<br>
