@@ -1,0 +1,594 @@
+{
+    "Jogo": {
+        "No": 5,
+        "Campeonato": "Campeonato Brasileiro - Série A/2021",
+        "Rodada": 1,
+        "Jogo": "Internacional / RS X Sport / PE",
+        "Data": "30/05/2021",
+        "Horário": "20:30",
+        "Estádio": "José Pinheiro Borda / Porto Alegre",
+        "Arbitragem": {
+            "Arbitro": "Vinicius Gonçalves Dias Araujo (AB / SP)",
+            "Arbitro Assistente 1": "Marcelo Carvalho Van Gasse (FIFA / SP)",
+            "Arbitro Assistente 2": "Alex Ang Ribeiro (AB / SP)",
+            "Quarto Arbitro": "Anderson da Silveira Farias (CD / RS)",
+            "Inspetor": "Jose Mocellin (CBF / RS)",
+            "VAR": "Pericles Bassols Pegado Cortez (MTR / SP)",
+            "AVAR": "Herman Brumel Vani (AB / SP)"
+        },
+        "Cronologia": {
+            "Entrada Mandante 1T": "20:20     ",
+            "Atraso Mandante 1T": "Não Houve",
+            "Entrada Visitante 1T": "20:20     ",
+            "Atraso Visitante 1T": "Não Houve",
+            "Início 1T": "20:30     ",
+            "Atraso Início 1T": "Não Houve",
+            "Término 1T": "21:16     ",
+            "Acréscimo 1T": "1 min",
+            "Entrada Mandante 2T": "21:28     ",
+            "Atraso Mandante 2T": "Não Houve",
+            "Entrada Visitante 2T": "21:28     ",
+            "Atraso Visitante 2T": "Não Houve",
+            "Início 2T": "21:31     ",
+            "Atraso Início 2T": "Não Houve",
+            "Término 2T": "22:23     ",
+            "Acréscimo 2T": "7 min",
+            "Resultado 1º Tempo": " 2 X 0     ",
+            "Resultado Final": " 2 X 2     "
+        },
+        "Mandante": {
+            "Clube": "Internacional / RS",
+            "Jogadores": {
+                "1": {
+                    "Nº": 12,
+                    "Apelido": "Marcelo Lomba",
+                    "Nome": "Marcelo Lomba do Nas ...",
+                    "T/R": "T(g)",
+                    "P/A": "P",
+                    "CBF": 157264
+                },
+                "2": {
+                    "Nº": 8,
+                    "Apelido": "Edenilson",
+                    "Nome": "Edenilson Andrade do ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 306270
+                },
+                "3": {
+                    "Nº": 10,
+                    "Apelido": "Taison",
+                    "Nome": "Taison Barcellos Freda",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 177042
+                },
+                "4": {
+                    "Nº": 11,
+                    "Apelido": "Yuri Alberto",
+                    "Nome": "Yuri Alberto Monteir ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 436395
+                },
+                "5": {
+                    "Nº": 14,
+                    "Apelido": "Lucas Ribeiro",
+                    "Nome": "Lucas Ribeiro dos Santos",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 540238
+                },
+                "6": {
+                    "Nº": 15,
+                    "Apelido": "Victor Cuesta",
+                    "Nome": "Victor Leandro Cuesta",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 567555
+                },
+                "7": {
+                    "Nº": 19,
+                    "Apelido": "Rodrigo",
+                    "Nome": "Rodrigo Oliveira Lindoso",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 184455
+                },
+                "8": {
+                    "Nº": 20,
+                    "Apelido": "Moises",
+                    "Nome": "Moises Roberto Barbosa",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 318481
+                },
+                "9": {
+                    "Nº": 26,
+                    "Apelido": "Renzo Saravia",
+                    "Nome": "Renzo Saravia",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 695696
+                },
+                "10": {
+                    "Nº": 27,
+                    "Apelido": "Mauricio",
+                    "Nome": "Mauricio Magalhaes Prado",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 542337
+                },
+                "11": {
+                    "Nº": 47,
+                    "Apelido": "Caio",
+                    "Nome": "Caio Vidal Rocha",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 442105
+                },
+                "12": {
+                    "Nº": 24,
+                    "Apelido": "Anthoni",
+                    "Nome": "Anthoni Spier Souza",
+                    "T/R": "R(g)",
+                    "P/A": "P",
+                    "CBF": 547301
+                },
+                "13": {
+                    "Nº": 2,
+                    "Apelido": "Heitor Rod ...",
+                    "Nome": "Heitor Rodrigues da  ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 464051
+                },
+                "14": {
+                    "Nº": 9,
+                    "Apelido": "Guerrero",
+                    "Nome": "Jose Paolo Guerrero  ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 420184
+                },
+                "15": {
+                    "Nº": 16,
+                    "Apelido": "PALACIOS",
+                    "Nome": "Carlosalonso Enrique ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 714251
+                },
+                "16": {
+                    "Nº": 17,
+                    "Apelido": "Thiago Gal ...",
+                    "Nome": "Thiago Galhardo do N ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 189822
+                },
+                "17": {
+                    "Nº": 18,
+                    "Apelido": "Praxedes",
+                    "Nome": "Bruno Conceicao Praxedes",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 541788
+                },
+                "18": {
+                    "Nº": 30,
+                    "Apelido": "Joao Lucas",
+                    "Nome": "Joao Lucas de Souza  ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 516798
+                },
+                "19": {
+                    "Nº": 33,
+                    "Apelido": "Nonato",
+                    "Nome": "Gustavo Nonato Santana",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 337363
+                },
+                "20": {
+                    "Nº": 35,
+                    "Apelido": "Gabriel",
+                    "Nome": "Jose Gabriel dos San ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 372403
+                },
+                "21": {
+                    "Nº": 36,
+                    "Apelido": "Leonardo",
+                    "Nome": "Leonardo Borges da Silva",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 529339
+                },
+                "22": {
+                    "Nº": 41,
+                    "Apelido": "Pedro Henr ...",
+                    "Nome": "Pedro Henrique Alves ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 532559
+                },
+                "23": {
+                    "Nº": 88,
+                    "Apelido": "Patrick",
+                    "Nome": "Patrick Bezerra do N ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 315585
+                }
+            },
+            "Comissão": {
+                "Técnico ": "Miguel Angel Ramirez Medina",
+                "Assistente Técnico ": "Osmar Loss Vieira",
+                "Médico ": "Rodrigo Hoffmeister Silva",
+                "Treinador De Goleiros ": "Martin Rodrigo Anselmi",
+                "Preparador Físico ": "Cristobal Fuentes Nieto",
+                "Massagista ": "Paulo Juarez Quintanilha Da Silva"
+            }
+        },
+        "Visitante": {
+            "Clube": "Sport / PE",
+            "Jogadores": {
+                "1": {
+                    "Nº": 1,
+                    "Apelido": "Mailson",
+                    "Nome": "Mailson Tenorio dos  ...",
+                    "T/R": "T(g)",
+                    "P/A": "P",
+                    "CBF": 460562
+                },
+                "2": {
+                    "Nº": 2,
+                    "Apelido": "Hayner",
+                    "Nome": "Hayner Willian Monja ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 402405
+                },
+                "3": {
+                    "Nº": 10,
+                    "Apelido": "Junior",
+                    "Nome": "Carlos Eugenio Junio ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 384984
+                },
+                "4": {
+                    "Nº": 15,
+                    "Apelido": "R. Thyere",
+                    "Nome": "Rafael Thyere de Alb ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 313474
+                },
+                "5": {
+                    "Nº": 20,
+                    "Apelido": "Ricardo",
+                    "Nome": "Ricardo Ribeiro de Lima",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 179100
+                },
+                "6": {
+                    "Nº": 30,
+                    "Apelido": "Thiago Neves",
+                    "Nome": "Thiago Neves Augusto",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 169888
+                },
+                "7": {
+                    "Nº": 35,
+                    "Apelido": "Sabino",
+                    "Nome": "Jose Sabino Chagas M ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 437531
+                },
+                "8": {
+                    "Nº": 56,
+                    "Apelido": "Sander",
+                    "Nome": "Sander Henrique Bort ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 346046
+                },
+                "9": {
+                    "Nº": 77,
+                    "Apelido": "Marcos",
+                    "Nome": "Marcos Antonio Almei ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 345210
+                },
+                "10": {
+                    "Nº": 94,
+                    "Apelido": "Paulo",
+                    "Nome": "Paulo Roberto Moccelin",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 360467
+                },
+                "11": {
+                    "Nº": 99,
+                    "Apelido": "MIKAEL",
+                    "Nome": "Mikael Filipe Viana  ...",
+                    "T/R": "T",
+                    "P/A": "P",
+                    "CBF": 599514
+                },
+                "12": {
+                    "Nº": 27,
+                    "Apelido": "Luan",
+                    "Nome": "Luan Polli Gomes",
+                    "T/R": "R(g)",
+                    "P/A": "P",
+                    "CBF": 338625
+                },
+                "13": {
+                    "Nº": 5,
+                    "Apelido": "Ronaldo",
+                    "Nome": "Ronaldo Henrique Fer ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 338491
+                },
+                "14": {
+                    "Nº": 9,
+                    "Apelido": "Santiago",
+                    "Nome": "Santiago Trellez Vivero",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 293087
+                },
+                "15": {
+                    "Nº": 12,
+                    "Apelido": "Patric",
+                    "Nome": "Patric Cabral Lalau",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 178620
+                },
+                "16": {
+                    "Nº": 14,
+                    "Apelido": "Welison",
+                    "Nome": "José Welison da Silva",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 313780
+                },
+                "17": {
+                    "Nº": 18,
+                    "Apelido": "Betinho",
+                    "Nome": "Roberto Pimenta Vina ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 321453
+                },
+                "18": {
+                    "Nº": 39,
+                    "Apelido": "Gustavo Silva",
+                    "Nome": "Gustavo Silva de Oliveira",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 582687
+                },
+                "19": {
+                    "Nº": 44,
+                    "Apelido": "Chico",
+                    "Nome": "Francisco Alves da S ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 518992
+                },
+                "20": {
+                    "Nº": 52,
+                    "Apelido": "Victor Gab ...",
+                    "Nome": "Victor Gabriel da Co ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 631097
+                },
+                "21": {
+                    "Nº": 71,
+                    "Apelido": "Emaxwell",
+                    "Nome": "Emaxwell Souza de Lima",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 427774
+                },
+                "22": {
+                    "Nº": 90,
+                    "Apelido": "Andre Felipe",
+                    "Nome": "Andre Felipe Ribeiro ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 292942
+                },
+                "23": {
+                    "Nº": 97,
+                    "Apelido": "Marquinhos",
+                    "Nome": "Marcos Vinicius Sous ...",
+                    "T/R": "R",
+                    "P/A": "P",
+                    "CBF": 452746
+                }
+            },
+            "Comissão": {
+                "Técnico ": "Umberto Lourenco Louzer Filho",
+                "Assistente Técnico ": "Gabriel De Queiroz Ferreira Remedio",
+                "Médico ": "Leonardo De Lima Silveira",
+                "Treinador De Goleiros ": "Romero Junior Dos Santos",
+                "Preparador Físico ": "Marcelo Rohling",
+                "Massagista ": "Maviael Severino Dos Santos"
+            }
+        },
+        "Gols": {
+            "1": {
+                "Minuto": "18:00",
+                "Tempo": "1T",
+                "Nº": "8",
+                "Tipo": "PN",
+                "Nome": "Edenilson Andrade dos Santos",
+                "Equipe": "Internacional/RS"
+            },
+            "2": {
+                "Minuto": "43:00",
+                "Tempo": "1T",
+                "Nº": "19",
+                "Tipo": "NR",
+                "Nome": "Rodrigo Oliveira Lindoso",
+                "Equipe": "Internacional/RS"
+            },
+            "3": {
+                "Minuto": "16:00",
+                "Tempo": "2T",
+                "Nº": "30",
+                "Tipo": "PN",
+                "Nome": "Thiago Neves Augusto",
+                "Equipe": "Sport/PE"
+            },
+            "4": {
+                "Minuto": "44:00",
+                "Tempo": "2T",
+                "Nº": "90",
+                "Tipo": "NR",
+                "Nome": "Andre Felipe Ribeiro de Souza",
+                "Equipe": "Sport/PE"
+            }
+        },
+        "Cartões amarelo": {
+            "1": {
+                "Minuto": "13:00",
+                "Tempo": "2T",
+                "Nº": "10",
+                "Nome": "Carlos Eugenio Junior Tavares dos Santos",
+                "Equipe": "Sport/PE",
+                "Motivo": " A1.11.  Golpear um adversário de maneira temerária na disputa da bola - Golpear um adversário de maneira temerária na disputa de bola."
+            },
+            "2": {
+                "Minuto": "+01:00",
+                "Tempo": "2T",
+                "Nº": "15",
+                "Nome": "Rafael Thyere de Albuquerque Marques",
+                "Equipe": "Sport/PE",
+                "Motivo": " A1.13.  Dar uma entrada contra um adversário de maneira temerária na disputa da bola - Dar uma entrada em seu adversário de maneira temerária na disputa de bola."
+            },
+            "3": {
+                "Minuto": "23:00",
+                "Tempo": "2T",
+                "Nº": "14",
+                "Nome": "Lucas Ribeiro dos Santos",
+                "Equipe": "Internacional/RS",
+                "Motivo": " A1.13.  Dar uma entrada contra um adversário de maneira temerária na disputa da bola - Dar uma entrada em seu adversário de maneira temerária na disputa de bola."
+            },
+            "4": {
+                "Minuto": "32:00",
+                "Tempo": "1T",
+                "Nº": "27",
+                "Nome": "Mauricio Magalhaes Prado",
+                "Equipe": "Internacional/RS",
+                "Motivo": " A1.13.  Dar uma entrada contra um adversário de maneira temerária na disputa da bola - Dar uma entrada em seu adversário de maneira temerária na disputa de bola."
+            },
+            "5": {
+                "Minuto": "32:00",
+                "Tempo": "1T",
+                "Nº": "20",
+                "Nome": "Moises Roberto Barbosa",
+                "Equipe": "Internacional/RS",
+                "Motivo": " A2.1.  Reclamar / protestar (verbalmente ou por gestos) ostensiva e ofensivamente contra decisão da arbitragem. -  reclamar verbalmente e ostensivamente contra as decisões da arbitragem."
+            },
+            "6": {
+                "Minuto": "45:00",
+                "Tempo": "2T",
+                "Nº": "16",
+                "Nome": "Carlosalonso Enrique Palacios Nunez",
+                "Equipe": "Internacional/RS",
+                "Motivo": " A1.13.  Dar uma entrada contra um adversário de maneira temerária na disputa da bola - Dar uma entrada em seu adversário de maneira temerária na disputa de bola."
+            }
+        },
+        "Cartões vermelho": {},
+        "Substituições": {
+            "1": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "2": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "3": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "4": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "5": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "6": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "7": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "8": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "9": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            },
+            "10": {
+                "Minuto": "39:00",
+                "Tempo": "2T",
+                "Equipe": "Internacional/RS",
+                "Entrou": "16 - Carlosalonso Enrique Palacio...",
+                "Saiu": "10 - Taison Barcellos Freda"
+            }
+        },
+        "OBS": " O acesso das equipes e arbitragem ao campo de jogo foi feito conforme a diretriz técnica operacional de retorno das competições da cbf Motivo de atraso no início e/ou reinício, e de acréscimos: Não houve atraso no início e nem no reinício de jogo.acréscimos devido a  atendimento de atletas, substituições, reposição de bola, checagem e revisão (var).foi respeitado 1 minuto de silêncio em homenagem as vitimas do covid-19 ",
+        "OBS eventuais": " Nada houve de anormal",
+        "OBS assistente": " Nada houve"
+    }
+}

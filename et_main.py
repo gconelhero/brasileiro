@@ -27,7 +27,7 @@ class Etl:
             os.remove(f"./PDFs/{arquivo}")
                 
         except:
-            with open('log.txt',  'a') as log:
+            with open('./logs/log.txt',  'a') as log:
                 log.write(f"\n{arquivo}:\n")
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)

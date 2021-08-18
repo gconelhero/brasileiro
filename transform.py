@@ -4,8 +4,6 @@ import re
 class ObjetoJogo:
 
     def transform(objeto):
-        
-
         try:
             cabecalho = objeto[0]
             jogo_num = cabecalho[0]
@@ -75,9 +73,7 @@ class ObjetoJogo:
         visitante = ''
         jogadores_mandante = {}
         jogadores_visitante = {}
-        loop = int(len(jogadores) / 6)
-        
-        for i in range(len(jogadores) - valor): # ARRUMAR O RANGE... MUITO ALTO!
+        for i in range(len(jogadores)): # ARRUMAR O RANGE... MUITO ALTO!
             try:
                 jogador = {}
                 if re.search('\D* / \D+', jogadores[valor]):

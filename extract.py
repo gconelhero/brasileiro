@@ -28,7 +28,7 @@ class ExtractJogo:
             pagina = pdf.getPage(i)
             paginas += pagina.extractText()
         
-
+    
         pag_um = pdf.getPage(0)
 
         jogo_num = int(pag_um.extractText().splitlines()[0].split(':')[-1])
@@ -122,5 +122,5 @@ class ExtractJogo:
 
             except:
                 pass
-        
+
         return [cabecalho, lista_arbitragem, lista_cronologia, jogadores, comissao, gols, cart_amar, cart_ver, obs, substituicao]

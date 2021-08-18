@@ -7,7 +7,7 @@ from et_main import Etl
 
 flag = True
 jogo = 1
-ano = 2019
+ano = 2018
 jogo_nulo = 0
 while flag:
     try:
@@ -22,24 +22,23 @@ while flag:
             if type_pdf.MIME == 'application/pdf':
                 Etl.etMain(f'jogo_{jogo}_{ano}.pdf')
                 jogo_nulo = 0
-                
 
         except:
             jogo_nulo += 1
             os.remove(f'./PDFs/jogo_{jogo}_{ano}.pdf')
-            with open('jogos_n_existente.txt', 'a') as ne:
+            with open('./logs/jogos_nao_existentes.txt', 'a') as ne:
                 ne.write(f'{url}\n')
-            if jogo > 385:
+            if jogo > 380:
                 ano += 1
                 jogo = 0
-            if jogo_nulo == 5:
+            elif jogo_nulo == 5:
                 flag = False
                 
 
         jogo += 1
     
     except:
-        with open('log_scrap.txt',  'a') as log:
+        with open('./logs/log_scrap.txt',  'a') as log:
                 log.write(f"\n{jogo}_{ano}:\n")
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)

@@ -28,7 +28,7 @@ class DataBase():
 
             return insert
         except:
-            with open('log_mongo_client.txt',  'a') as log:
+            with open('./logs/log_mongo_client.txt',  'a') as log:
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 
