@@ -2,3 +2,4 @@ PyPDF2
 requests
 filetype
 pymongo
+pandas
