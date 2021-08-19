@@ -14,13 +14,8 @@ Radando o projeto:<br>
 `python3 scraper.py`<br>
 
 Instalando e configurando o MongoDB:<br>
-<<<<<<< HEAD
-https://docs.mongodb.com/manual/installation/<br>
-https://docs.mongodb.com/manual/reference/configuration-options/<br>
-=======
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
->>>>>>> 96859e8fb3d718e781ffae9dde71ef6a9b19d4dc
 
 DataBase:<br>
 `brasileiro`<br>
