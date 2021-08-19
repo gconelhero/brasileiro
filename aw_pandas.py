@@ -1,5 +1,6 @@
 from pymongo import MongoClient
 import pandas as pd
+from pyspark import SparkContext, SparkConf
 
 pd.set_option('display.max_columns', None)
 pd.set_option('display.max_rows', None)
@@ -15,4 +16,3 @@ jogos = pd.DataFrame(list(df['Jogo']))
 arbitragem = pd.DataFrame(list(jogos['Arbitragem']))
 # Printando as 2 primeiras colunas e as 10 primeiras linhas do Data Frame.
 print(arbitragem[arbitragem.columns[0:2]].iloc[0:10])
-

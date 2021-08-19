@@ -4,6 +4,20 @@ import filetype
 from PyPDF2 import PdfFileReader
 from et_main import Etl
 
+dirs = os.listdir(".")
+try:
+    if "PDFs" not in dirs:
+        os.mkdir("./PDFs")
+    if "pdf_fail" not in dirs:
+        os.mkdir("./pdf_fail")
+    if "json_files" not in dirs:
+        os.mkdir("./json_files")
+    if "logs" not in dirs:
+        os.mkdir("./logs")
+
+except Exception as erro:
+    print(f'\n{erro}\n DIRETÓRIOS NÃO ENCONTRADOS')
+    
 
 flag = True
 jogo = 1
@@ -18,6 +32,7 @@ while flag:
         pdf_file.write(response.content)
         type_pdf = filetype.guess(f'./PDFs/jogo_{jogo}_{ano}.pdf')
         pdf_file.close()
+        
         try:
             if type_pdf.MIME == 'application/pdf':
                 Etl.etMain(f'jogo_{jogo}_{ano}.pdf')
@@ -33,8 +48,9 @@ while flag:
                 jogo = 0
             elif jogo_nulo == 5:
                 flag = False
+            elif ano == 2021 and jogo > 160:
+                flag = False
                 
-
         jogo += 1
     
     except:

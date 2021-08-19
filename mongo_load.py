@@ -2,7 +2,6 @@ import sys, traceback, os
 import json
 from pymongo import MongoClient
 
-arquivos = os.listdir('./json_files/')
 class DataBase():
 
     def __init__(self, collection):

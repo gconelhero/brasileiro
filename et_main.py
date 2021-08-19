@@ -6,8 +6,6 @@ from extract import ExtractJogo
 from transform import ObjetoJogo
 
 
-arquivos = os.listdir("./PDFs/")
-
 class Etl:
     
     def etMain(arquivo):
