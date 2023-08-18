@@ -1,130 +1,102 @@
+from datetime import datetime, timezone, timedelta
 import json
 import re
 
 class ObjetoJogo:
 
-    def transform(objeto):
+    def __init__(self, cabecalho, arbitragem, cronologia, jogadores):
+        self.cabecalho = cabecalho
+        self.arbitragem = arbitragem
+        self.cronologia = cronologia
+        self.jogadores = jogadores
+
+    def transform(self):
         try:
-            cabecalho = objeto[0]
-            jogo_num = cabecalho[0]
-            campeonato = cabecalho[1]
-            rodada = cabecalho[2]
-            jogo = cabecalho[3]
-            data = cabecalho[4]
-            hora = cabecalho[5]
-            estadio = cabecalho[6]
-            
-            lista_arbitragem = objeto[1]
-            lista_cronologia = objeto[2]
-            jogadores = objeto[3]
+            cabecalho = self.cabecalho
+
+            jogo_num = self.cabecalho[0]
+            campeonato = self.cabecalho[1]
+            rodada = self.cabecalho[2]
+            jogo = self.cabecalho[3]
+            data = self.cabecalho[4]
+            hora = self.cabecalho[5]
+            estadio = self.cabecalho[6]
+
+            lista_arbitragem = self.arbitragem
+            lista_cronologia = self.cronologia
+            jogadores = self.jogadores
+
+            '''
             comissao = objeto[4]
             gols = objeto[5]
             cart_amar = objeto[6]
             cart_ver = objeto[7]
             obs = objeto[8]
             substituicao = objeto[9]
-
+            '''
         except Exception as erro:
             pass
 
-
-        chave = 0
-        valor = 1
         arbitragem = {}
-        loop = int(len(lista_arbitragem) / 2)
+        for i in range(len(lista_arbitragem)):
+            arbitragem[lista_arbitragem[i].split(':')[0]] = lista_arbitragem[i].split(':')[-1]
         
-        for i in range(loop):
-            arbitragem[lista_arbitragem[chave].split(':')[0]] = lista_arbitragem[valor]
-            chave += 2
-            valor += 2
-        
-        chave = 0
-        valor = 1
         cronologia = {}
-        for i in range(len(lista_cronologia)):
-            if re.search('Resultado do 1º Tempo', lista_cronologia[valor]):
-                cronologia['Resultado 1º Tempo'] = lista_cronologia[valor].split(':')[-1]
-                cronologia['Resultado Final'] = lista_cronologia[valor + 1].split(':')[-1]
-                break
-            else:
-                cronologia['Entrada Mandante 1T'] = lista_cronologia[valor]
-                cronologia['Atraso Mandante 1T'] = lista_cronologia[valor + 2]
-                cronologia['Entrada Visitante 1T'] = lista_cronologia[valor + 4]
-                cronologia['Atraso Visitante 1T'] = lista_cronologia[valor + 6]
-                cronologia['Início 1T'] = lista_cronologia[valor + 8]
-                cronologia['Atraso Início 1T'] = lista_cronologia[valor + 10]
-                cronologia['Término 1T'] = lista_cronologia[valor + 12]
-                cronologia['Acréscimo 1T'] = lista_cronologia[valor + 14]
-                cronologia['Entrada Mandante 2T'] = lista_cronologia[valor + 16]
-                cronologia['Atraso Mandante 2T'] = lista_cronologia[valor + 18]
-                cronologia['Entrada Visitante 2T'] = lista_cronologia[valor + 20]
-                cronologia['Atraso Visitante 2T'] = lista_cronologia[valor + 22]
-                cronologia['Início 2T'] = lista_cronologia[valor + 24]
-                cronologia['Atraso Início 2T'] = lista_cronologia[valor + 26]
-                cronologia['Término 2T'] = lista_cronologia[valor + 28]
-                cronologia['Acréscimo 2T'] = lista_cronologia[valor + 30]
-                valor += 31
-
+        tmp_str = lista_cronologia[0].split('mandante:')[1].split('Atraso')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Entrada mandante 1T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso mandante 1T'] = lista_cronologia[0].split('mandante:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('visitante:')[1].split('Atraso')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Entrada visitante 1T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso visitante 1T'] = lista_cronologia[0].split('visitante:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('Tempo:')[1].split('Atraso')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Início 1T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso início 1T'] = lista_cronologia[0].split('Tempo:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('Tempo:')[1].split('Acréscimo')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Término 1T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        if re.search(r'\d+', lista_cronologia[0].split('Acréscimo:')[1]):
+            cronologia['Acréscimo 1T'] = re.search(r'\d+', lista_cronologia[0].split('Acréscimo:')[1]).group()
+            cronologia['Acréscimo 1T'] = timedelta(minutes=int(cronologia['Acréscimo 1T']))
+        else:
+            cronologia['Acréscimo 1T'] = 'Não Houve'
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('mandante:')[1].split('Atraso')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Entrada mandante 2T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso mandante 2T'] = lista_cronologia[0].split('mandante:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        cronologia['Entrada visitante 2T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso visitante 2T'] = lista_cronologia[0].split('visitante:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        cronologia['Início 2T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        cronologia['Atraso início 2T'] = lista_cronologia[0].split('Tempo:')[1].split('Atraso: ')[-1]
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('Tempo:')[1].split('Acréscimo')[0].replace(' ', '') + ':00 -0300'
+        cronologia['Término 2T'] = datetime.strptime(tmp_str, "%H:%M:%S %z").timetz()
+        if re.search(r'\d+', lista_cronologia[0].split('Acréscimo:')[1]):
+            cronologia['Acréscimo 2T'] = re.search(r'\d+', lista_cronologia[0].split('Acréscimo:')[1]).group()
+            cronologia['Acréscimo 2T'] = timedelta(minutes=int(cronologia['Acréscimo 2T']))
+        else:
+            cronologia['Acréscimo 2T'] = 'Não Houve'
+        lista_cronologia.pop(0)
+        tmp_str = lista_cronologia[0].split('Tempo: ')[-1].split('Resultado')[0].replace(' ', '')
+        cronologia['Resultado 1T'] = {'Mandante': int(tmp_str.split('X')[0]),
+                                      'Visitante': int(tmp_str.split('X')[-1])
+                                      }
+        tmp_str = lista_cronologia[0].split('Final: ')[-1].replace(' ', '')
+        cronologia['Resultado Final'] = {'Mandate': int(tmp_str.split('X')[0]),
+                                         'Visitante': int(tmp_str.split('X')[-1])
+                                         }
+        lista_cronologia.pop(0)
         
-        chave = 0
-        valor = 0
-        jogador = {}
-        mandante = ''
-        visitante = ''
-        jogadores_mandante = {}
-        jogadores_visitante = {}
-        for i in range(len(jogadores)): # ARRUMAR O RANGE... MUITO ALTO!
-            try:
-                jogador = {}
-                if re.search('\D* / \D+', jogadores[valor]):
-                    if mandante != '':
-                        visitante = jogadores[valor]
-                        valor += 1
-                    else:
-                        mandante = jogadores[valor]
-                        valor += 1
-                
-                elif visitante != '':
-                    jogador['Nº'] = int(jogadores[valor])
-                    valor += 1
-                    jogador['Apelido'] = jogadores[valor]
-                    valor += 1
-                    jogador['Nome'] = jogadores[valor]
-                    valor += 1
-                    jogador['T/R'] = jogadores[valor]
-                    valor += 1
-                    jogador['P/A'] = jogadores[valor]
-                    valor += 1
-                    jogador['CBF'] = int(jogadores[valor])
-                    valor += 1
-                    jogadores_visitante[len(jogadores_visitante) + 1] = jogador
-                    
-                else:
-                    jogador['Nº'] = int(jogadores[valor])
-                    valor += 1
-                    jogador['Apelido'] = jogadores[valor]
-                    valor += 1
-                    jogador['Nome'] = jogadores[valor]
-                    valor += 1
-                    jogador['T/R'] = jogadores[valor]
-                    valor += 1
-                    jogador['P/A'] = jogadores[valor]
-                    valor += 1
-                    jogador['CBF'] = int(jogadores[valor])
-                    valor += 1
-                    jogadores_mandante[len(jogadores_mandante) + 1] = jogador
-                            
-            except:
-                pass
-
-
+        
         count = 0
-        chave = 0
         valor = 1
         comissao_mandante = {}
         comissao_visitante = {}
         for i in comissao:
-            if re.search('\D* / \D+', i):
+            if re.search(r'\D* / \D+', i):
                 count += 1
             elif count == 1:
                 try:
@@ -171,7 +143,7 @@ class ObjetoJogo:
         motivo = []
         for i in cart_amar:
             
-            if re.search('\d+:\d+', i) or re.search('Cartões Vermelhos', i):
+            if re.search(r'\d+:\d+', i) or re.search('Cartões Vermelhos', i):
                 count = 0
                 if count == 0 and motivo == []:
                     cart['Minuto'] = cart_amar[valor]
@@ -190,7 +162,7 @@ class ObjetoJogo:
                 motivo.append(cart_amar[valor])
                 valor += 1
                 try:
-                    if re.search('\d+:\d+', cart_amar[valor]):
+                    if re.search(r'\d+:\d+', cart_amar[valor]):
                         count = 0
                 except:
                     cart['Motivo'] = ' '.join(motivo).replace('Motivo:', '')
@@ -210,7 +182,7 @@ class ObjetoJogo:
         motivo = []
         for i in cart_ver:
             try:
-                if re.search('\d+:\d+', i) or re.search('Ocorrências / Observações', i):
+                if re.search(r'\d+:\d+', i) or re.search('Ocorrências / Observações', i):
                     count = 0
                     if count == 0:
                         cart['Minuto'] = cart_ver[valor]
@@ -228,7 +200,7 @@ class ObjetoJogo:
                     motivo.append(cart_ver[valor])
                     valor += 1
                     try:
-                        if re.search('\d+:\d+', cart_ver[valor]):
+                        if re.search(r'\d+:\d+', cart_ver[valor]):
                             count = 0
                     except:
                         cart['Motivo'] = ' '.join(motivo).replace('Motivo:', '')

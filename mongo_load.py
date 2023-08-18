@@ -1,12 +1,13 @@
-import sys, traceback, os
-import json
+import sys, traceback, os, json
+
 from pymongo import MongoClient
 
 class DataBase():
 
     def __init__(self, collection):
+        
         try:
-            self.mongo_ins = MongoClient(host='192.168.0.112',
+            self.mongo_ins = MongoClient(host='0.0.0.0',
                                         port=27017,
                                         maxPoolSize=200)
             self.database_name = 'brasileiro'

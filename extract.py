@@ -1,6 +1,14 @@
+# Standard
 import re
-import logging
+from datetime import datetime, timezone, timedelta
+import dateutil
+# Externas
 from PyPDF2 import PdfFileReader
+import pandas as pd
+import fitz
+import tabula
+# Internas
+from scraper import Scraper
 
 flag = ['Arbitragem', 'Cronologia', 'Relação de Jogadores', 'Comissão Técnica', 
         'Gols', 'Cartões Amarelos', 'Cartões Vermelhos', 'Ocorrências / Observações',
@@ -19,93 +27,336 @@ reject = ['Arbitragem', 'Cronologia', '1º Tempo', '2º Tempo',
             'Entrou', 'Saiu', 'Substituições', 'Página 3/3', '3 / 3', 
             'Powered by TCPDF (www.tcpdf.org)',]
 
-class ExtractJogo:
-
-    def sumula(arquivo):
-        pdf = PdfFileReader(arquivo)
-        paginas = ''
-        for i in range(pdf.getNumPages()):
-            pagina = pdf.getPage(i)
-            paginas += pagina.extractText()
-        
+class ExtractPdf:
     
-        pag_um = pdf.getPage(0)
-
-        jogo_num = int(pag_um.extractText().splitlines()[0].split(':')[-1])
-        campeonato = pag_um.extractText().splitlines()[4]
-        rodada = int(pag_um.extractText().splitlines()[6])
-        jogo = pag_um.extractText().splitlines()[8]
-        data = pag_um.extractText().splitlines()[10]
-        hora = pag_um.extractText().splitlines()[12]
-        estadio = pag_um.extractText().splitlines()[14]
-
-        cabecalho = [jogo_num, campeonato, rodada, jogo, data, hora, estadio]
+    def __init__(self, arquivo):
+        self.arquivo = arquivo
+        self.pdf = PdfFileReader(self.arquivo)
+        self.paginas = ''
+        for i in range(self.pdf.getNumPages()):
+            pagina = self.pdf.getPage(i)
+            self.paginas += pagina.extractText()
         
-        return ExtractJogo.extract(cabecalho, paginas)
+    def cabecalho(self):
+        pagina = self.paginas
+        pag_um = self.pdf.getPage(0)
+        jogo_num = int(re.findall(r'(Jogo+:?\s?)+([0-9]*)?', pag_um.extractText())[0][-1])
+        campeonato = re.search('Campeonato (.+)', pag_um.extractText()).group().split('Rodada: ')
+        rodada = int(campeonato[-1])
+        campeonato = campeonato[0]
+        jogo = re.findall('Jogo: (.+)', pag_um.extractText())[-1]
+        self.mandante = jogo.replace(' X ', 'X').split('X')[0]
+        self.visitante = jogo.replace(' X ', 'X').split('X')[-1]
+        data_h_e = re.search('Data: (.+)', pag_um.extractText()).group().split('Horário: ')
+        data = data_h_e[0].split('Data: ')[-1]
+        data = data.replace(' ', '')
+        self.data = datetime.strptime(data, "%d/%m/%Y").date()
+        hora = data_h_e[-1].split('Estádio')[0].replace(' ', '') + ':00 -0300'
+        hora = datetime.strptime(hora, "%H:%M:%S %z").timetz()
+        estadio = data_h_e[-1].split('Estádio: ')[-1]
+        cabecalho = [jogo_num, campeonato, rodada, jogo, self.data, hora, estadio]
+        
+        return cabecalho
 
-    def extract(cabecalho, paginas):
-        count = -1000
+    def arbitragem(self):
         lista_arbitragem = []
-        lista_cronologia = []
-        jogadores = []
-        for i in paginas.splitlines():
-            if i == flag[0]:
-                count = 0
-            elif count == 0 and i not in reject:
+        paginas = self.paginas.splitlines()
+        for i in paginas[paginas.index('Arbitragem'):]:
+            if i != 'Cronologia' and i not in reject:
                 lista_arbitragem.append(i)
-            elif i == flag[1]:
-                count = 1
-            elif count == 1 and i not in reject:
+            elif i == 'Cronologia':
+                break
+
+        return lista_arbitragem
+
+    def cronologia(self):
+        lista_cronologia = []
+        paginas = self.paginas.splitlines()
+        for i in paginas[paginas.index('Cronologia'):]:
+            if i != 'Relação de Jogadores' and i not in reject:
                 lista_cronologia.append(i)
-            elif i == flag[2]:
-                count = 2
-            elif count == 2 and i not in reject:
-                jogadores.append(i)
+            elif i == 'Relação de Jogadores':
+                break
 
-
-        count = -1000
-        comissao = []
-        gols = []
-        cart_amar = []
-        cart_ver = []
-        for i in paginas.splitlines():
-            try:
-                if i == flag[3]:
-                    count = 3
-                if count == 3:
-                    if re.search('(\D* / D+)', i):
-                        comissao.insert(0, 'Clube')
-                        comissao.append(i)
-                    elif i != flag[3] and i not in reject:
-                        comissao.append(i)
-                if i == flag[4]:
-                    count = 4
-                if count == 4 and i not in reject:
-                    gols.append(i)
-                if i == flag[5]:
-                    count = 5
-                if count == 5 and i not in reject:
-                    cart_amar.append(i)
-                if i == flag[6]:
-                    count = 6
-                if i == flag[7]:
-                    count = -1000
-                if count == 6 and i not in reject:
-                    if re.search('Publicação da Súmula:', i):
-                        pass
-                    elif re.search('Nada houve de anormal.', i):
-                        pass
-                    elif re.search('Emissão desta via:', i):
-                        pass
-                    elif re.search('2 / 3', i):
-                        pass
-                    else:
-                        cart_ver.append(i)
-            except: 
-                pass
+        return lista_cronologia
         
+    def jogadores(self):
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.load_page(0)
+        pdf = page.get_text()
+        # fitz.area = (esquerda, altura, direita, baixo)
+        num = page.search_for('Nº')
+        cbf = page.search_for('CBF')
+        bottom = page.search_for('T = Titular')
+        # tabula.area = (top, esquerda, baixo, direita)
+        mandante_area = (int(num[0][1]), int(num[0][0])-5, int(bottom[0][1]), int(cbf[-2][2])+18)
+        visitante_area = (int(num[1][1]), int(num[1][0])-5, int(bottom[0][1]), int(cbf[-1][2])+18)
+        mandante_plantel = tabula.read_pdf(arquivo, pages='1', area=mandante_area)
+        visitante_plantel = tabula.read_pdf(arquivo, pages='1', area=visitante_area)
+        mandante_df = pd.DataFrame(mandante_plantel[0]).dropna()
+        visitante_df = pd.DataFrame(visitante_plantel[0]).dropna()
+        self.jogadores = {self.mandante: {}, self.visitante: {}}
+        for i, row in mandante_df.iterrows():
+            numero = int(row['No'])
+            apelido = row['Apelido']
+            nome = row['Nome Completo']
+            t_r = row['T/R']
+            if 'g' in t_r:
+                t_r = 'T(g)'
+                for i in self.jogadores[self.mandante].values():
+                    if 'T(g)' in i.values():
+                        t_r = 'R(g)'
+            elif 'R' in t_r:
+                t_r = 'R'
+            elif 'T' in t_r:
+                t_r = 'T'
+            p_a = row['P/A']
+            cbf = int(row['CBF'])
+            scraper = Scraper(self.data.year, None)
+            jogador = scraper.jogador(self.mandante, cbf, apelido, nome)
+            # Chamar o mongo load para inserir os dados de scraper.jogador
+            # Criar uma nova função na classe transform para criar o objeto jogador
+            self.jogadores[self.mandante][numero] = {'apelido': jogador['apelido'], 
+                                                    'nome': jogador['nome'], 
+                                                    'T/R': t_r, 
+                                                    'P/A': p_a, 
+                                                    'id_cbf': jogador['id_cbf']
+                                                    }
 
-    
+        for i, row in visitante_df.iterrows():
+            numero = int(row['No'])
+            apelido = row['Apelido']
+            nome = row['Nome Completo']
+            t_r = row['T/R']
+            if 'g' in t_r:
+                t_r = 'T(g)'
+                for i in self.jogadores[self.mandante].values():
+                    if 'T(g)' in i.values():
+                        t_r = 'R(g)'
+            p_a = row['P/A']
+            cbf = int(row['CBF'])
+            scraper = Scraper(self.data.year, None)
+            jogador = scraper.jogador(self.visitante, cbf, apelido, nome)
+            # Chamar o mongo load para inserir os dados de scraper.jogador
+            self.jogadores[self.visitante][numero] = {'apelido': jogador['apelido'], 
+                                                    'nome': jogador['nome'], 
+                                                    'T/R': t_r, 
+                                                    'P/A': p_a, 
+                                                    'id_cbf': jogador['id_cbf']
+                                                    }
+
+        return self.jogadores
+
+        # quando for acessar a URL validar o nome dos jogadores if <tag-hml>apelido<tag-html> in sumula.apelido ... else: log.this.in.log.file
+        # Criar uma consulta com o mongo para ver se o jogador já foi inserido naquele ano
+    def comissao(self):
+        self.comissao = {self.mandante: {}, self.visitante: {}}
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.pages()
+        paginas = ''
+        for p in page:
+            paginas += p.get_text()
+        paginas = paginas.splitlines()
+        paginas = paginas[paginas.index('Comissão Técnica')+1:paginas.index('Gols')]
+        # A numeração da página está ficando junto com 'Comissão Técnica'
+        count = 1
+        for i, s in enumerate(paginas):
+            if re.search(r':\s?\S\D*', s):
+                paginas[i] = s.split(': ')[-1]
+                s = re.search(r'\D+: ', s).group()
+                paginas.insert(i, s)
+        for i, s in enumerate(paginas):
+            if re.search(self.visitante, s):
+                index = i + 1
+                break
+            else:
+                if s != self.mandante:
+                    if re.search(r'\w+:', s):
+                        if s.split(': ')[0] in self.comissao[self.mandante].keys():
+                            s = s.split(': ')[0]
+                            for x in self.comissao[self.mandante].keys():
+                                if s in x:
+                                    count += 1
+                            if '-' in paginas[i + 1]:
+                                paginas[i + 1] = paginas[i + 1].split(' - ')[0]
+                            self.comissao[self.mandante][s+f' {str(count)}'] = paginas[i + 1]
+                            count = 1
+                        else:
+                            if '-' in paginas[i + 1]:
+                                paginas[i + 1] = paginas[i + 1].split(' - ')[0]
+                            self.comissao[self.mandante][s.split(':')[0]] = paginas[i + 1]
+        count = 1
+        for i, s in enumerate(paginas[index:], index):
+            if re.search(r':\s?\S\D*', s):
+                i = i + 1
+            if re.search(r'\w+:', s):
+                if s.split(': ')[0] in self.comissao[self.visitante].keys():
+                    s = s.split(': ')[0]
+                    for x in self.comissao[self.visitante].keys():
+                        if s in x:
+                            count += 1
+                    if '-' in paginas[i + 1]:
+                        paginas[i + 1] = paginas[i + 1].split(' - ')[0]
+                    self.comissao[self.visitante][s+f' {str(count)}'] = paginas[i + 1]
+                    count = 1
+                else:
+                    if '-' in paginas[i + 1]:
+                        paginas[i + 1] = paginas[i + 1].split(' - ')[0]
+                    self.comissao[self.visitante][s.split(':')[0]] = paginas[i + 1]
+
+        return self.comissao
+
+    def gols(self):
+        gols = {}
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.load_page(0)
+        for i, p in enumerate(arquivo_fitz.pages()):
+            page_tabula = i + 1
+            #page = arquivo_fitz.load_page()
+            # fitz.area = (esquerda, altura, direita, baixo)
+            tempo = p.search_for('Tempo')
+            equipe = p.search_for('Equipe')
+            bottom = p.search_for('NR = Normal')
+            if tempo != [] and equipe != [] and bottom != []:
+                break
+        # tabula.area = (altura, esquerda, baixo, direita)
+        try:
+            gols_area = (int(tempo[0][1]), int(tempo[0][0])-20, int(bottom[0][1]), int(equipe[0][2])+50)
+            gols_tabela = tabula.read_pdf(arquivo, pages=f'{page_tabula}', area=gols_area)
+            gols_df = pd.DataFrame(gols_tabela[0]).dropna()
+        except:
+            print('Não houve gols')
+            return gols
+        for i, row in gols_df.iterrows():
+            if re.search(r'\+', row['Tempo']):
+                minutos_acrescimo = re.search(r'\d+', row['Tempo']).group()
+                minutos_acrescimo = 45 + int(minutos_acrescimo)
+                minutos = datetime.strptime(f'{minutos_acrescimo}:00', "%M:%S").time()
+            else:                
+                minutos = datetime.strptime(row['Tempo'], "%M:%S").time()
+            tempo = row['1T/2T']
+            num = int(row['No'])
+            tipo = row['Tipo']
+            nome = ''
+            equipe = row['Equipe']
+            for x in self.jogadores.keys():
+                re_equipe = re.search(equipe.split('/')[0], x)
+                if re_equipe:
+                    equipe = x
+                    #nome = self.jogadores[equipe][num]['nome']
+            gols[i + 1] = {'minuto': minutos, '1T/2T': tempo, 'numero': num, 'nome': nome, 'equipe': equipe}
+
+        return gols
+
+    def cartoes(self):
+        minutos = None
+        tempo = None
+        num = None
+        nome = None
+        equipe = None
+        motivo = None
+        cartoes_amarelos = {self.mandante: {}, self.visitante: {}}
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.pages()
+        paginas = ''
+        for p in page:
+            paginas += p.get_text()
+        paginas = paginas.splitlines()
+        paginas = paginas[paginas.index('Cartões Amarelos')+1:paginas.index('Cartões Vermelhos')]
+        for index, i in enumerate(paginas):
+            if re.search(r'\d+:\d+', i):
+                minutos = i
+                if re.search(r'\+\d+:\d+', i):
+                    minutos_acrescimo = re.search(r'\d+', i).group()
+                    minutos_acrescimo = 45 + int(minutos_acrescimo)
+                    minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
+                else:
+                    minutos = datetime.strptime(i, '%M:%S').time()
+
+            if re.search(r'\dT', i):
+                tempo = i
+            if re.search(r'^\d{1,2}$', i):
+                num = int(re.search(r'^\d{1,2}$', i).group())
+                nome = paginas[index + 1]
+                if re.search(paginas[index + 2].split('/')[0], self.mandante):
+                    #nome = self.jogadores[self.mandante][num]['nome']
+                    equipe = self.mandante
+                elif re.search(paginas[index + 2].split('/')[0], self.visitante):
+                    #nome = self.jogadores[self.visitante][num]['nome']
+                    equipe = self.visitante
+            if re.search(r'^\D{1,2}$', i):
+                num = re.search(r'^\D{1,2}$', i).group()
+                nome = paginas[index + 1]
+                if re.search(paginas[index + 2].split('/')[0], self.mandante):
+                    equipe = self.mandante
+                elif re.search(paginas[index + 2].split('/')[0], self.visitante):
+                    equipe = self.visitante
+            if equipe:        
+                for k, v in self.comissao[equipe].items():
+                    if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
+                        num = k
+                        nome = v
+            if re.search(r'^Motivo: A\d*\W?\d*\W?', i):
+                motivo = re.search(r'^Motivo: A\d*\W?\d*\W?', i).group().split(': ')[-1]
+            elif re.search(r'^Motivo: \D*', i):
+                motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
+            if num and tempo and nome and motivo:
+                cartoes_amarelos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'motivo': motivo} 
+            else:
+                pass
+
+        return cartoes_amarelos
+
+    def cartoes_(self):
+        minutos = None
+        tempo = None
+        num = None
+        nome = None
+        equipe = None
+        motivo = None
+        cartoes_amarelos = {self.mandante: {}, self.visitante: {}}
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.pages()
+        paginas = ''
+        for p in page:
+            paginas += p.get_text()
+        paginas = paginas.splitlines()
+        for index, i in enumerate(paginas[paginas.index('Cartões Vermelhos'):]):
+            print()
+        for index, i in enumerate(paginas):
+            print()
+            if re.search(r'\d+:\d+', i):
+                minutos = i
+                print()
+                #if re.search(r'\+\d+:\d+', i):
+                #    minutos_acrescimo = re.search(r'\d+', i).group()
+                #    minutos_acrescimo = 45 + int(minutos_acrescimo)
+                #    minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
+                #else:
+                #    minutos = datetime.strptime(i, '%M:%S').time()
+            
+
+    def espera():
+        if i == flag[6]:
+            count = 6
+        if i == flag[7]:
+            count = -1000
+        if count == 6 and i not in reject:
+            if re.search('Publicação da Súmula:', i):
+                pass
+            elif re.search('Nada houve de anormal.', i):
+                pass
+            elif re.search('Emissão desta via:', i):
+                pass
+            elif re.search('Página*', i):
+                pass
+            else:
+                cart_ver.append(i)
         count = -1000
         obs = []
         substituicao = []    
@@ -122,5 +373,5 @@ class ExtractJogo:
 
             except:
                 pass
-
+        
         return [cabecalho, lista_arbitragem, lista_cronologia, jogadores, comissao, gols, cart_amar, cart_ver, obs, substituicao]
