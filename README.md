@@ -10,7 +10,7 @@ Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
 `cd brasileiro`<br>
 `python3 -m pip install -r requirements.txt`<br>
-`python3 scraper.py`<br>
+`python3 et_main.py`<br>
 
 Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
