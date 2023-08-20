@@ -21,8 +21,8 @@ DataBase:<br>
 Collection:<br>
 `jogos`<br>
 
-Altere os parâmetros de conexão em `mongo_load.py`:<br>
+Change connection parameters in `mongo_load.py`:<br>
 `host='<IP DO SEU MongoDB>'`<br>
 
-Inserindo os arquivos JSON na collection:<br>
+Inserting JSON files into the collection:<br>
 `python3 mongo_load.py`<br>
