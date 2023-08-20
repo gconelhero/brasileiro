@@ -27,6 +27,8 @@ Change connection parameters in `mongo_load.py`:<br>
 Inserting JSON files into the collection:<br>
 `python3 mongo_load.py`<br>
 
+# Unfortunately PDFs have ill-defined structures and irregular patterns.
+
 ![2](https://github.com/gconelhero/brasileiro/assets/26088216/8c482e73-7d39-40fa-bca2-cb5161eb5bf2)
 
 {'Entrada mandante 1T': datetime.time(15, 50, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso mandante 1T': 'Não Houve', 'Entrada visitante 1T': datetime.time(15, 50, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso visitante 1T': 'Não Houve', 'Início 1T': datetime.time(16, 0, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso início 1T': 'Não Houve', 'Término 1T': datetime.time(16, 51, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Acréscimo 1T': datetime.timedelta(seconds=360), 'Entrada mandante 2T': datetime.time(17, 4, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso mandante 2T': 'Não Houve', 'Entrada visitante 2T': datetime.time(17, 4, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso visitante 2T': 'Não Houve', 'Início 2T': datetime.time(17, 4, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Atraso início 2T': 'Não Houve', 'Término 2T': datetime.time(17, 56, tzinfo=datetime.timezone(datetime.timedelta(days=-1, seconds=75600))), 'Acréscimo 2T': datetime.timedelta(seconds=300), 'Resultado 1T': {'Mandante': 2, 'Visitante': 0}, 'Resultado Final': {'Mandate': 2, 'Visitante': 1}}
