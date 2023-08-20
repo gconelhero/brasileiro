@@ -26,3 +26,5 @@ Change connection parameters in `mongo_load.py`:<br>
 
 Inserting JSON files into the collection:<br>
 `python3 mongo_load.py`<br>
+
+![1](https://github.com/gconelhero/brasileiro/assets/26088216/348fe3c9-f535-4387-8283-ce061b93a4c8)
