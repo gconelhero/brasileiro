@@ -1,19 +1,18 @@
 # brasileiro
-Projeto relacionado ao estudo de análise de dados com Python e Pandas
+Project related to the study of data analysis with Python, Pandas, Mongo and Metabase
 
-Objstivos:
-* Extrair, transformar e carregar os dados contidos nas súmulas do campeonato brasileiro para análise posterior.
-* Criar uma API para compartilhar esses dados com outras aplicações.
+Objectives:
+* Extract, transform and load the data contained in the Brazilian championship scores for further analysis.
+* Create an API to share this data with other applications.
 
 
-
-Radando o projeto:<br>
+Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
 `cd brasileiro`<br>
 `python3 -m pip install -r requirements.txt`<br>
 `python3 scraper.py`<br>
 
-Instalando e configurando o MongoDB:<br>
+Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
 
