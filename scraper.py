@@ -1,4 +1,5 @@
 import os
+import sys
 import requests
 import re
 from datetime import datetime
@@ -125,7 +126,7 @@ class Scraper:
                             }
         except:
             with open('./logs/log_scrap.txt',  'a') as log:
-                log.write(f"\n{jogo}_{ano}_Scraper_API:\n")
+                log.write(f"\n{self.jogo}_{self.ano}_Scraper_API:\n")
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 

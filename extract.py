@@ -134,6 +134,10 @@ class ExtractPdf:
                 for i in self.jogadores[self.mandante].values():
                     if 'T(g)' in i.values():
                         t_r = 'R(g)'
+            elif 'R' in t_r:
+                t_r = 'R'
+            elif 'T' in t_r:
+                t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
             scraper = Scraper(self.data.year, None)
@@ -246,7 +250,7 @@ class ExtractPdf:
                 re_equipe = re.search(equipe.split('/')[0], x)
                 if re_equipe:
                     equipe = x
-                    #nome = self.jogadores[equipe][num]['nome']
+                    nome = self.jogadores[equipe][num]['nome']
             gols[i + 1] = {'minuto': minutos, '1T/2T': tempo, 'numero': num, 'nome': nome, 'equipe': equipe}
 
         return gols
@@ -268,14 +272,14 @@ class ExtractPdf:
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Cartões Amarelos')+1:paginas.index('Cartões Vermelhos')]
         for index, i in enumerate(paginas):
-            if re.search(r'\d+:\d+', i):
+            if re.search(r'\d+:\d+', i) and len(i) < 7:
                 minutos = i
                 if re.search(r'\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
                     minutos_acrescimo = 45 + int(minutos_acrescimo)
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
-                    minutos = datetime.strptime(i, '%M:%S').time()
+                    minutos = datetime.strptime(minutos, '%M:%S').time()
 
             if re.search(r'\dT', i):
                 tempo = i
@@ -283,10 +287,10 @@ class ExtractPdf:
                 num = int(re.search(r'^\d{1,2}$', i).group())
                 nome = paginas[index + 1]
                 if re.search(paginas[index + 2].split('/')[0], self.mandante):
-                    #nome = self.jogadores[self.mandante][num]['nome']
+                    nome = self.jogadores[self.mandante][num]['nome']
                     equipe = self.mandante
                 elif re.search(paginas[index + 2].split('/')[0], self.visitante):
-                    #nome = self.jogadores[self.visitante][num]['nome']
+                    nome = self.jogadores[self.visitante][num]['nome']
                     equipe = self.visitante
             if re.search(r'^\D{1,2}$', i):
                 num = re.search(r'^\D{1,2}$', i).group()
@@ -318,7 +322,7 @@ class ExtractPdf:
         nome = None
         equipe = None
         motivo = None
-        cartoes_amarelos = {self.mandante: {}, self.visitante: {}}
+        cartoes_vermelhos = {self.mandante: {}, self.visitante: {}}
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.pages()
@@ -326,52 +330,98 @@ class ExtractPdf:
         for p in page:
             paginas += p.get_text()
         paginas = paginas.splitlines()
-        for index, i in enumerate(paginas[paginas.index('Cartões Vermelhos'):]):
-            print()
+        paginas = paginas[paginas.index('Cartões Vermelhos')+1:paginas.index('Ocorrências / Observações')]
         for index, i in enumerate(paginas):
-            print()
-            if re.search(r'\d+:\d+', i):
+            if re.search(r'\d+:\d+', i) and len(i) < 7:
                 minutos = i
-                print()
-                #if re.search(r'\+\d+:\d+', i):
-                #    minutos_acrescimo = re.search(r'\d+', i).group()
-                #    minutos_acrescimo = 45 + int(minutos_acrescimo)
-                #    minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
-                #else:
-                #    minutos = datetime.strptime(i, '%M:%S').time()
-            
-
-    def espera():
-        if i == flag[6]:
-            count = 6
-        if i == flag[7]:
-            count = -1000
-        if count == 6 and i not in reject:
-            if re.search('Publicação da Súmula:', i):
-                pass
-            elif re.search('Nada houve de anormal.', i):
-                pass
-            elif re.search('Emissão desta via:', i):
-                pass
-            elif re.search('Página*', i):
-                pass
+                if re.search(r'\+\d+:\d+', i):
+                    minutos_acrescimo = re.search(r'\d+', i).group()
+                    minutos_acrescimo = 45 + int(minutos_acrescimo)
+                    minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
+                else:
+                    minutos = datetime.strptime(minutos, '%M:%S').time()
+            if re.search(r'\dT', i):
+                tempo = i
+            if re.search(r'^\d{1,2}$', i):
+                num = int(re.search(r'^\d{1,2}$', i).group())
+                nome = paginas[index + 1].split(' - ')[0]
+                condicao = paginas[index + 2]
+                if re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.mandante):
+                    nome = self.jogadores[self.mandante][num]['nome']
+                    equipe = self.mandante
+                elif re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.visitante):
+                    nome = self.jogadores[self.visitante][num]['nome']
+                    equipe = self.visitante
+            elif re.search(r'^\w{1,2}$', i) :
+                num = re.search(r'^\w{1,2}$', i).group()
+                if len(paginas) - 1 >= index + 1:
+                    nome = paginas[index + 1]
+                    condicao = paginas[index + 2]
+                if re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.mandante):
+                    equipe = self.mandante
+                elif re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.visitante):
+                    equipe = self.visitante
+            if equipe:        
+                for k, v in self.comissao[equipe].items():
+                    if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
+                        num = k
+                        nome = v
+            if re.search(r'^Motivo: V\d*\W?\d*\W?', i):
+                motivo = re.search(r'^Motivo: V\d*\W?\d*\W?', i).group().split(': ')[-1]
+            elif re.search(r'^Motivo: \D*', i):
+                motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
+            if num and tempo and nome and motivo:
+                cartoes_vermelhos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'condicao': condicao, 'motivo': motivo} 
             else:
-                cart_ver.append(i)
-        count = -1000
-        obs = []
-        substituicao = []    
-        for i in paginas.splitlines():
-            try:
-                if i == flag[7]:
-                    count = 7
-                if count == 7 and i not in reject:
-                    obs.append(i)
-                if i == flag[8]:
-                    count = 8 
-                if count == 8 and i not in reject:
-                    substituicao.append(i)
-
-            except:
                 pass
-        
-        return [cabecalho, lista_arbitragem, lista_cronologia, jogadores, comissao, gols, cart_amar, cart_ver, obs, substituicao]
+
+        return cartoes_vermelhos
+    
+    def substituicoes(self):
+        minutos = None
+        tempo = None
+        num_entrou = None
+        num_saiu = None
+        nome_entrou = None
+        nome_saiu = None
+        equipe = None
+        substituicoes_ = {self.mandante: {}, self.visitante: {}}
+        arquivo = self.arquivo
+        arquivo_fitz = fitz.open(arquivo)
+        page = arquivo_fitz.pages()
+        paginas = ''
+        for p in page:
+            paginas += p.get_text()
+        paginas = paginas.splitlines()
+        paginas = paginas[paginas.index('Substituições')+1:]
+        print(paginas)
+        for index, i in enumerate(paginas):
+            print(index, i)
+            if re.search(r'\d+:\d+', i) and len(i) < 7:
+                minutos = i
+                if re.search(r'\+\d+:\d+', i):
+                    minutos_acrescimo = re.search(r'\d+', i).group()
+                    minutos_acrescimo = 45 + int(minutos_acrescimo)
+                    minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
+                else:
+                    minutos = datetime.strptime(minutos, '%M:%S').time()
+                if minutos:
+                    tempo = paginas[index + 1]
+                    num_entrou = int(paginas[index + 3].split(' - ')[0])
+                    nome_entrou = paginas[index + 3].split(' - ')[-1]
+                    num_saiu = int(paginas[index + 4].split(' - ')[0])
+                    nome_saiu = paginas[index + 4].split(' - ')[-1]
+                    if re.search(paginas[index + 2].split('/')[0], self.mandante):
+                        nome_entrou = self.jogadores[self.mandante][num_entrou]['nome']
+                        nome_saiu = self.jogadores[self.mandante][num_saiu]['nome']
+                        equipe = self.mandante
+                    elif re.search(paginas[index + 2].split('/')[0], self.visitante):
+                        nome_entrou = self.jogadores[self.visitante][num_entrou]['nome']
+                        nome_saiu = self.jogadores[self.visitante][num_saiu]['nome']
+                        equipe = self.visitante
+            if minutos and equipe and num_entrou and tempo and nome_entrou:
+                substituicoes_[equipe][num_entrou] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome_entrou, 'num_saiu': num_saiu, 'nome_saiu': nome_saiu}
+                minutos = None
+
+            print(substituicoes_)
+#        return [cabecalho, lista_arbitragem, lista_cronologia, jogadores, comissao, gols, cart_amar, cart_ver, obs, substituicao]

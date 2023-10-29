@@ -22,39 +22,41 @@ class Etl:
             print(arquivo) # TERMINAL
             sumula = ExtractPdf(f"./PDFs/{arquivo}")
             cabecalho = sumula.cabecalho()
-            arbitragem = sumula.arbitragem()
-            cronologia = sumula.cronologia()
-            #jogadores = sumula.jogadores()
+            #print(cabecalho)
+            #arbitragem = sumula.arbitragem()
+            #print(arbitragem)
+            #cronologia = sumula.cronologia()
+            #print(cronologia)
+            jogadores = sumula.jogadores()
             comissao = sumula.comissao()
-            #print(comissao)
-            #print('\n'*3)
             #gols = sumula.gols()
-            #print(gols)
             cartoes_amarelos = sumula.cartoes()
             print(cartoes_amarelos)
             cartoes_vermelhos = sumula.cartoes_()
-            '''
-            jogo = ObjetoJogo(cabecalho, arbitragem, cronologia, jogadores)
-            jogo = jogo.transform()
-            objeto_jogo = json.dumps(jogo, 
-                                    ensure_ascii=False, sort_keys=False, 
-                                    indent=4, separators=(',', ': '))
+            print(cartoes_vermelhos)
+            substituicoes = sumula.substituicoes()
+            print(substituicoes)
+            #jogo = ObjetoJogo(cabecalho, arbitragem, cronologia, jogadores)
+            #jogo = jogo.transform()
+            #objeto_jogo = json.dumps(jogo, 
+            #                        ensure_ascii=False, sort_keys=False, 
+            #                        indent=4, separators=(',', ': '))
             
-            with open(f'./json_files/{arquivo[:-4]}.json', 'w') as json_file:
-                json_file.write(objeto_jogo)
-            os.remove(f"./PDFs/{arquivo}")
-            '''
+#            with open(f'./json_files/{arquivo[:-4]}.json', 'w') as json_file:
+#                json_file.write(objeto_jogo)
+#            os.remove(f"./PDFs/{arquivo}")
+            
         except:
             with open('./logs/log.txt',  'a') as log:
                 log.write(f"\n{arquivo}:\n")
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 
-            shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")
+ #           shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")
 
 import random
 if __name__ == '__main__':
-    for i in range(1):
-        etl = Etl(2019, 311)#etl = Etl(2021, 1)
+    for i in range(100):
+        etl = Etl(2019, 3)#etl = Etl(2021, 1)
         #etl = Etl(random.randint(2014, 2022), random.randint(1, 380))
         etl.etMain()

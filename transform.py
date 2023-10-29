@@ -90,7 +90,7 @@ class ObjetoJogo:
                                          }
         lista_cronologia.pop(0)
         
-        
+        print(cronologia)
         count = 0
         valor = 1
         comissao_mandante = {}
