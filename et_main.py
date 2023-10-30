@@ -47,16 +47,25 @@ class Etl:
 #            os.remove(f"./PDFs/{arquivo}")
             
         except:
+            shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")
             with open('./logs/log.txt',  'a') as log:
                 log.write(f"\n{arquivo}:\n")
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 
- #           shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")
-
 import random
 if __name__ == '__main__':
-    for i in range(100):
-        etl = Etl(2019, 3)#etl = Etl(2021, 1)
-        #etl = Etl(random.randint(2014, 2022), random.randint(1, 380))
+    jogo = 1
+    ano = 2014
+    while jogo < 140 and ano < 2023:
+        etl = Etl(ano, jogo)
+        if jogo == 380:
+            jogo = 1
+            ano += 1
+        else:
+            jogo += 1
         etl.etMain()
+#    for i in range(100):
+#        etl = Etl(2014, 1)
+#        #etl = Etl(random.randint(2014, 2022), random.randint(1, 380))
+        #etl.etMain()

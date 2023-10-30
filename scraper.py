@@ -27,9 +27,10 @@ class Scraper:
                 os.mkdir("./logs")
         except Exception as erro:
             print(f'\n{erro}\n DIRETÓRIOS NÃO ENCONTRADOS')
-            log.write(f"\n{jogo}_{ano}_Scraper_init:\n")
-            traceback.print_exc(file=log)
-            traceback.print_exc(file=sys.stdout)
+            with open('./logs/log_scrap.txt',  'a') as log:
+                log.write(f"\n{jogo}_{ano}_Scraper_init:\n")
+                traceback.print_exc(file=log)
+                traceback.print_exc(file=sys.stdout)
 
     def pdf(self):
         flag = True
@@ -38,7 +39,7 @@ class Scraper:
         jogo_nulo = 0
         while flag:
             try:
-                # Testar a URL em <142> para ver se achos outras APIs (Dirserarch)
+                # Testar a URL em <142> para ver outras APIs (Dirserarch)
                 url = f'https://conteudo.cbf.com.br/sumulas/{ano}/142{jogo}se.pdf'
                 response = requests.get(url)
                 pdf_content = response.content

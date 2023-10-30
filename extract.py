@@ -113,8 +113,9 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            scraper = Scraper(self.data.year, None)
-            jogador = scraper.jogador(self.mandante, cbf, apelido, nome)
+            #scraper = Scraper(self.data.year, None)
+            #jogador = scraper.jogador(self.mandante, cbf, apelido, nome)
+            jogador = {'apelido': apelido, 'nome': nome, 'id_cbf': cbf}
             # Chamar o mongo load para inserir os dados de scraper.jogador
             # Criar uma nova função na classe transform para criar o objeto jogador
             self.jogadores[self.mandante][numero] = {'apelido': jogador['apelido'], 
@@ -140,8 +141,9 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            scraper = Scraper(self.data.year, None)
-            jogador = scraper.jogador(self.visitante, cbf, apelido, nome)
+            #scraper = Scraper(self.data.year, None)
+            #jogador = scraper.jogador(self.visitante, cbf, apelido, nome)
+            jogador = {'apelido': apelido, 'nome': nome, 'id_cbf': cbf}
             # Chamar o mongo load para inserir os dados de scraper.jogador
             self.jogadores[self.visitante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
@@ -272,44 +274,45 @@ class ExtractPdf:
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Cartões Amarelos')+1:paginas.index('Cartões Vermelhos')]
         for index, i in enumerate(paginas):
-            if re.search(r'\d+:\d+', i) and len(i) < 7:
+            if re.search(r'^\d+:\d+', i) and len(i) < 7:
                 minutos = i
-                if re.search(r'\+\d+:\d+', i):
+                if re.search(r'^\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
                     minutos_acrescimo = 45 + int(minutos_acrescimo)
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
                     minutos = datetime.strptime(minutos, '%M:%S').time()
-
-            if re.search(r'\dT', i):
-                tempo = i
-            if re.search(r'^\d{1,2}$', i):
-                num = int(re.search(r'^\d{1,2}$', i).group())
-                nome = paginas[index + 1]
-                if re.search(paginas[index + 2].split('/')[0], self.mandante):
-                    nome = self.jogadores[self.mandante][num]['nome']
-                    equipe = self.mandante
-                elif re.search(paginas[index + 2].split('/')[0], self.visitante):
-                    nome = self.jogadores[self.visitante][num]['nome']
-                    equipe = self.visitante
-            if re.search(r'^\D{1,2}$', i):
-                num = re.search(r'^\D{1,2}$', i).group()
-                nome = paginas[index + 1]
-                if re.search(paginas[index + 2].split('/')[0], self.mandante):
-                    equipe = self.mandante
-                elif re.search(paginas[index + 2].split('/')[0], self.visitante):
-                    equipe = self.visitante
-            if equipe:        
-                for k, v in self.comissao[equipe].items():
-                    if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
-                        num = k
-                        nome = v
+                if re.search(r'\dT', paginas[index + 1]):
+                    tempo = paginas[index + 1]
+                if re.match(r'INT', paginas[index + 1]):
+                    tempo = paginas[index + 1]
+                if re.search(r'^\d{1,2}$', paginas[index + 2]):
+                    num = int(re.search(r'^\d{1,2}$', paginas[index + 2]).group())
+                    nome = paginas[index + 3]
+                    if re.search(paginas[index + 4].split('/')[0], self.mandante):
+                        nome = self.jogadores[self.mandante][num]['nome']
+                        equipe = self.mandante
+                    elif re.search(paginas[index + 4].split('/')[0], self.visitante):
+                        nome = self.jogadores[self.visitante][num]['nome']
+                        equipe = self.visitante
+                elif re.search(r'^\D{1,2}$', paginas[index + 2]):
+                    num = re.search(r'^\D{1,2}$', paginas[index + 2]).group()
+                    nome = paginas[index + 3]
+                    if re.search(paginas[index + 4].split('/')[0], self.mandante):
+                        equipe = self.mandante
+                    elif re.search(paginas[index + 4].split('/')[0], self.visitante):
+                        equipe = self.visitante
+                if equipe:        
+                    for k, v in self.comissao[equipe].items():
+                        if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
+                            num = k
+                            nome = v
             if re.search(r'^Motivo: A\d*\W?\d*\W?', i):
                 motivo = re.search(r'^Motivo: A\d*\W?\d*\W?', i).group().split(': ')[-1]
             elif re.search(r'^Motivo: \D*', i):
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
-                cartoes_amarelos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'motivo': motivo} 
+                cartoes_amarelos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'motivo': motivo}
             else:
                 pass
 
@@ -340,32 +343,34 @@ class ExtractPdf:
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
                     minutos = datetime.strptime(minutos, '%M:%S').time()
-            if re.search(r'\dT', i):
-                tempo = i
-            if re.search(r'^\d{1,2}$', i):
-                num = int(re.search(r'^\d{1,2}$', i).group())
-                nome = paginas[index + 1].split(' - ')[0]
-                condicao = paginas[index + 2]
-                if re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.mandante):
-                    nome = self.jogadores[self.mandante][num]['nome']
-                    equipe = self.mandante
-                elif re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.visitante):
-                    nome = self.jogadores[self.visitante][num]['nome']
-                    equipe = self.visitante
-            elif re.search(r'^\w{1,2}$', i) :
-                num = re.search(r'^\w{1,2}$', i).group()
-                if len(paginas) - 1 >= index + 1:
-                    nome = paginas[index + 1]
-                    condicao = paginas[index + 2]
-                if re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.mandante):
-                    equipe = self.mandante
-                elif re.search(paginas[index + 1].split(' - ')[-1].split('/')[0], self.visitante):
-                    equipe = self.visitante
-            if equipe:        
-                for k, v in self.comissao[equipe].items():
-                    if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
-                        num = k
-                        nome = v
+                if re.search(r'\dT', paginas[index + 1]):
+                    tempo = paginas[index + 1]
+                if re.match(r'INT', paginas[index + 1]):
+                    tempo = paginas[index + 1]
+                if re.search(r'^\d{1,2}$', paginas[index + 2]):
+                    num = int(re.search(r'^\d{1,2}$', paginas[index + 2]).group())
+                    nome = paginas[index + 3].split(' - ')[0]
+                    condicao = paginas[index + 4]
+                    if re.search(paginas[index + 3].split(' - ')[-1].split('/')[0], self.mandante):
+                        nome = self.jogadores[self.mandante][num]['nome']
+                        equipe = self.mandante
+                    elif re.search(paginas[index + 3].split(' - ')[-1].split('/')[0], self.visitante):
+                        nome = self.jogadores[self.visitante][num]['nome']
+                        equipe = self.visitante
+                elif re.search(r'^\w{1,2}$', paginas[index + 2]):
+                    num = re.search(r'^\w{1,2}$', paginas[index + 2]).group()
+                    if len(paginas) - 1 >= index + 2:
+                        nome = paginas[index + 3]
+                        condicao = paginas[index + 4]
+                    if re.search(paginas[index + 3].split(' - ')[-1].split('/')[0], self.mandante):
+                        equipe = self.mandante
+                    elif re.search(paginas[index + 3].split(' - ')[-1].split('/')[0], self.visitante):
+                        equipe = self.visitante
+                if equipe:
+                    for k, v in self.comissao[equipe].items():
+                        if re.search(nome.casefold(), v.casefold()) or re.search(v.casefold(), nome.casefold()):
+                            num = k
+                            nome = v
             if re.search(r'^Motivo: V\d*\W?\d*\W?', i):
                 motivo = re.search(r'^Motivo: V\d*\W?\d*\W?', i).group().split(': ')[-1]
             elif re.search(r'^Motivo: \D*', i):
@@ -394,10 +399,8 @@ class ExtractPdf:
             paginas += p.get_text()
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Substituições')+1:]
-        print(paginas)
         for index, i in enumerate(paginas):
-            print(index, i)
-            if re.search(r'\d+:\d+', i) and len(i) < 7:
+            if re.search(r'^\d+:\d+', i) and len(i) < 7:
                 minutos = i
                 if re.search(r'\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
@@ -405,23 +408,26 @@ class ExtractPdf:
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
                     minutos = datetime.strptime(minutos, '%M:%S').time()
-                if minutos:
+                if re.search(r'\dT', paginas[index + 1]):
                     tempo = paginas[index + 1]
+                if re.match(r'INT', paginas[index + 1]):
+                    tempo = paginas[index + 1]
+                if minutos:
                     num_entrou = int(paginas[index + 3].split(' - ')[0])
                     nome_entrou = paginas[index + 3].split(' - ')[-1]
                     num_saiu = int(paginas[index + 4].split(' - ')[0])
                     nome_saiu = paginas[index + 4].split(' - ')[-1]
-                    if re.search(paginas[index + 2].split('/')[0], self.mandante):
-                        nome_entrou = self.jogadores[self.mandante][num_entrou]['nome']
-                        nome_saiu = self.jogadores[self.mandante][num_saiu]['nome']
-                        equipe = self.mandante
-                    elif re.search(paginas[index + 2].split('/')[0], self.visitante):
-                        nome_entrou = self.jogadores[self.visitante][num_entrou]['nome']
-                        nome_saiu = self.jogadores[self.visitante][num_saiu]['nome']
-                        equipe = self.visitante
-            if minutos and equipe and num_entrou and tempo and nome_entrou:
+                if re.search(paginas[index + 2].split('/')[0], self.mandante):
+                    nome_entrou = self.jogadores[self.mandante][num_entrou]['nome']
+                    nome_saiu = self.jogadores[self.mandante][num_saiu]['nome']
+                    equipe = self.mandante
+                elif re.search(paginas[index + 2].split('/')[0], self.visitante):
+                    nome_entrou = self.jogadores[self.visitante][num_entrou]['nome']
+                    nome_saiu = self.jogadores[self.visitante][num_saiu]['nome']
+                    equipe = self.visitante
+            if equipe and num_entrou and tempo and nome_entrou:
                 substituicoes_[equipe][num_entrou] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome_entrou, 'num_saiu': num_saiu, 'nome_saiu': nome_saiu}
-                minutos = None
-
-            print(substituicoes_)
-#        return [cabecalho, lista_arbitragem, lista_cronologia, jogadores, comissao, gols, cart_amar, cart_ver, obs, substituicao]
+            else:
+                pass
+            
+        return substituicoes_
