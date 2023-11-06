@@ -1,19 +1,13 @@
-# Standard
 import re
-from datetime import datetime, timezone, timedelta
-import dateutil
-# Externas
+from datetime import datetime
+
 from PyPDF2 import PdfFileReader
 import pandas as pd
 import fitz
 import tabula
-# Internas
+
 from scraper import Scraper
 
-flag = ['Arbitragem', 'Cronologia', 'Relação de Jogadores', 'Comissão Técnica', 
-        'Gols', 'Cartões Amarelos', 'Cartões Vermelhos', 'Ocorrências / Observações',
-        'Substituições',]
-    
 reject = ['Arbitragem', 'Cronologia', '1º Tempo', '2º Tempo', 
             'Relação de Jogadores',
             'T = Titular | R = Reserva | P = Profissional | A = Amador | (g) = Goleiro',
@@ -38,7 +32,6 @@ class ExtractPdf:
             self.paginas += pagina.extractText()
         
     def cabecalho(self):
-        pagina = self.paginas
         pag_um = self.pdf.getPage(0)
         jogo_num = int(re.findall(r'(Jogo+:?\s?)+([0-9]*)?', pag_um.extractText())[0][-1])
         campeonato = re.search('Campeonato (.+)', pag_um.extractText()).group().split('Rodada: ')
@@ -85,11 +78,11 @@ class ExtractPdf:
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.load_page(0)
         pdf = page.get_text()
-        # fitz.area = (esquerda, altura, direita, baixo)
+        # fitz.area = (left, top, right, bottom)
         num = page.search_for('Nº')
         cbf = page.search_for('CBF')
         bottom = page.search_for('T = Titular')
-        # tabula.area = (top, esquerda, baixo, direita)
+        # tabula.area = (top, left, bottom, right)
         mandante_area = (int(num[0][1]), int(num[0][0])-5, int(bottom[0][1]), int(cbf[-2][2])+18)
         visitante_area = (int(num[1][1]), int(num[1][0])-5, int(bottom[0][1]), int(cbf[-1][2])+18)
         mandante_plantel = tabula.read_pdf(arquivo, pages='1', area=mandante_area)
@@ -113,18 +106,14 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            #scraper = Scraper(self.data.year, None)
-            #jogador = scraper.jogador(self.mandante, cbf, apelido, nome)
-            jogador = {'apelido': apelido, 'nome': nome, 'id_cbf': cbf}
-            # Chamar o mongo load para inserir os dados de scraper.jogador
-            # Criar uma nova função na classe transform para criar o objeto jogador
+            scraper = Scraper(self.data.year, None)
+            jogador = scraper.jogador(cbf, apelido, nome)
             self.jogadores[self.mandante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
                                                     'T/R': t_r, 
                                                     'P/A': p_a, 
                                                     'id_cbf': jogador['id_cbf']
                                                     }
-
         for i, row in visitante_df.iterrows():
             numero = int(row['No'])
             apelido = row['Apelido']
@@ -141,10 +130,8 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            #scraper = Scraper(self.data.year, None)
-            #jogador = scraper.jogador(self.visitante, cbf, apelido, nome)
-            jogador = {'apelido': apelido, 'nome': nome, 'id_cbf': cbf}
-            # Chamar o mongo load para inserir os dados de scraper.jogador
+            scraper = Scraper(self.data.year, None)
+            jogador = scraper.jogador(cbf, apelido, nome)
             self.jogadores[self.visitante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
                                                     'T/R': t_r, 
@@ -154,8 +141,6 @@ class ExtractPdf:
 
         return self.jogadores
 
-        # quando for acessar a URL validar o nome dos jogadores if <tag-hml>apelido<tag-html> in sumula.apelido ... else: log.this.in.log.file
-        # Criar uma consulta com o mongo para ver se o jogador já foi inserido naquele ano
     def comissao(self):
         self.comissao = {self.mandante: {}, self.visitante: {}}
         arquivo = self.arquivo
@@ -166,7 +151,6 @@ class ExtractPdf:
             paginas += p.get_text()
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Comissão Técnica')+1:paginas.index('Gols')]
-        # A numeração da página está ficando junto com 'Comissão Técnica'
         count = 1
         for i, s in enumerate(paginas):
             if re.search(r':\s?\S\D*', s):
@@ -215,20 +199,16 @@ class ExtractPdf:
         return self.comissao
 
     def gols(self):
-        gols = {}
+        gols = []
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
-        page = arquivo_fitz.load_page(0)
         for i, p in enumerate(arquivo_fitz.pages()):
             page_tabula = i + 1
-            #page = arquivo_fitz.load_page()
-            # fitz.area = (esquerda, altura, direita, baixo)
             tempo = p.search_for('Tempo')
             equipe = p.search_for('Equipe')
             bottom = p.search_for('NR = Normal')
             if tempo != [] and equipe != [] and bottom != []:
                 break
-        # tabula.area = (altura, esquerda, baixo, direita)
         try:
             gols_area = (int(tempo[0][1]), int(tempo[0][0])-20, int(bottom[0][1]), int(equipe[0][2])+50)
             gols_tabela = tabula.read_pdf(arquivo, pages=f'{page_tabula}', area=gols_area)
@@ -252,8 +232,8 @@ class ExtractPdf:
                 re_equipe = re.search(equipe.split('/')[0], x)
                 if re_equipe:
                     equipe = x
-                    nome = self.jogadores[equipe][num]['nome']
-            gols[i + 1] = {'minuto': minutos, '1T/2T': tempo, 'numero': num, 'nome': nome, 'equipe': equipe}
+                    id_cbf = self.jogadores[equipe][num]['id_cbf']
+            gols.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': id_cbf, 'equipe': equipe})
 
         return gols
 
@@ -264,7 +244,7 @@ class ExtractPdf:
         nome = None
         equipe = None
         motivo = None
-        cartoes_amarelos = {self.mandante: {}, self.visitante: {}}
+        cartoes_amarelos = []
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.pages()
@@ -312,7 +292,11 @@ class ExtractPdf:
             elif re.search(r'^Motivo: \D*', i):
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
-                cartoes_amarelos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'motivo': motivo}
+                if self.jogadores[equipe][num]:
+                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'motivo': motivo})
+                else:
+                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'motivo': motivo})
+                num = None
             else:
                 pass
 
@@ -325,7 +309,7 @@ class ExtractPdf:
         nome = None
         equipe = None
         motivo = None
-        cartoes_vermelhos = {self.mandante: {}, self.visitante: {}}
+        cartoes_vermelhos = []
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.pages()
@@ -376,7 +360,11 @@ class ExtractPdf:
             elif re.search(r'^Motivo: \D*', i):
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
-                cartoes_vermelhos[equipe][num] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome, 'condicao': condicao, 'motivo': motivo} 
+                if self.jogadores[equipe][num]:
+                    cartoes_vermelhos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'condicao': condicao, 'motivo': motivo, 'equipe': equipe}) 
+                else:
+                    cartoes_vermelhos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'condicao': condicao, 'motivo': motivo, 'equipe': equipe})
+                num = None
             else:
                 pass
 
@@ -390,7 +378,7 @@ class ExtractPdf:
         nome_entrou = None
         nome_saiu = None
         equipe = None
-        substituicoes_ = {self.mandante: {}, self.visitante: {}}
+        substituicoes_ = []
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.pages()
@@ -426,7 +414,10 @@ class ExtractPdf:
                     nome_saiu = self.jogadores[self.visitante][num_saiu]['nome']
                     equipe = self.visitante
             if equipe and num_entrou and tempo and nome_entrou:
-                substituicoes_[equipe][num_entrou] = {'minuto': minutos, '1T/2T': tempo, 'nome': nome_entrou, 'num_saiu': num_saiu, 'nome_saiu': nome_saiu}
+                id_cbf = self.jogadores[equipe][num_entrou]['id_cbf']
+                id_cbf_ = self.jogadores[equipe][num_saiu]['id_cbf']
+                substituicoes_.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'entrou': id_cbf, 'saiu': id_cbf_, 'equipe': equipe})
+                equipe = None
             else:
                 pass
             

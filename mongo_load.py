@@ -1,11 +1,10 @@
-import sys, traceback, os, json
+import sys, traceback
 
 from pymongo import MongoClient
 
 class DataBase():
 
     def __init__(self, collection):
-        
         try:
             self.mongo_ins = MongoClient(host='0.0.0.0',
                                         port=27017,
@@ -14,25 +13,16 @@ class DataBase():
             self.collection_name = collection
             self.connect = self.mongo_ins[self.database_name]
             self.database = self.connect[self.collection_name]
-
         except:
             with open('log_mongo_client.txt',  'a') as log:
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 
-    def insert(self, arquivo):
+    def insert(self, objeto):
         try:
-            with open(arquivo, 'r') as json_file:
-                json_data = json.load(json_file)
-                insert = self.database.insert_one(json_data)
-
+            insert = self.database.insert_one(objeto)
             return insert
         except:
             with open('./logs/log_mongo_client.txt',  'a') as log:
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
-
-
-arquivos = os.listdir('./json_files/')
-for arquivo in arquivos:
-    DataBase('jogos').insert(f'./json_files/{arquivo}')

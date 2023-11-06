@@ -1,14 +1,12 @@
-# Standard
 import os
 import shutil
 import sys
-import json
 import traceback
-# Internas
+
 from scraper import Scraper
 from extract import ExtractPdf
 from transform import ObjetoJogo
-
+from mongo_load import DataBase
 
 class Etl:
 
@@ -19,33 +17,28 @@ class Etl:
     def etMain(self):
         arquivo = self.arquivo
         try:
-            print(arquivo) # TERMINAL
+            print(arquivo)
             sumula = ExtractPdf(f"./PDFs/{arquivo}")
             cabecalho = sumula.cabecalho()
-            #print(cabecalho)
-            #arbitragem = sumula.arbitragem()
-            #print(arbitragem)
-            #cronologia = sumula.cronologia()
-            #print(cronologia)
+            arbitragem = sumula.arbitragem()
+            cronologia = sumula.cronologia()
             jogadores = sumula.jogadores()
             comissao = sumula.comissao()
-            #gols = sumula.gols()
+            gols = sumula.gols()
             cartoes_amarelos = sumula.cartoes()
-            print(cartoes_amarelos)
             cartoes_vermelhos = sumula.cartoes_()
-            print(cartoes_vermelhos)
             substituicoes = sumula.substituicoes()
-            print(substituicoes)
-            #jogo = ObjetoJogo(cabecalho, arbitragem, cronologia, jogadores)
-            #jogo = jogo.transform()
-            #objeto_jogo = json.dumps(jogo, 
-            #                        ensure_ascii=False, sort_keys=False, 
-            #                        indent=4, separators=(',', ': '))
-            
-#            with open(f'./json_files/{arquivo[:-4]}.json', 'w') as json_file:
-#                json_file.write(objeto_jogo)
-#            os.remove(f"./PDFs/{arquivo}")
-            
+            jogo = ObjetoJogo(cabecalho, arbitragem, cronologia, jogadores, comissao, gols, cartoes_amarelos, cartoes_vermelhos, substituicoes)
+            jogo = jogo.transform()
+            for k, v in jogo.items():
+                mongo_load = DataBase(k)
+                objeto = v
+                if type(objeto) == list:
+                    for i in v:                        
+                        mongo_load.insert(i)
+                else:
+                    mongo_load.insert(v)
+            os.remove(f"./PDFs/{arquivo}")
         except:
             shutil.move(f'./PDFs/{arquivo}', f"./pdf_fail/{arquivo}")
             with open('./logs/log.txt',  'a') as log:
@@ -65,7 +58,3 @@ if __name__ == '__main__':
         else:
             jogo += 1
         etl.etMain()
-#    for i in range(100):
-#        etl = Etl(2014, 1)
-#        #etl = Etl(random.randint(2014, 2022), random.randint(1, 380))
-        #etl.etMain()
