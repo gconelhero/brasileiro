@@ -1,5 +1,5 @@
 # brasileiro
-Project related to the study of data analysis with Python, Pandas, Mongo and Metabase
+Project related to the study of data analysis with Python and Mongo.
 
 Objectives:
 * Extract, transform and load the data contained in the Brazilian championship scores for further analysis.
