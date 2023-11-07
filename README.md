@@ -20,7 +20,7 @@ Run:<br>
 `python3 -m pip install -r requirements.txt`<br>
 `python3 et_main.py`<br>
 
-#Some PDFs have ill-defined structures and irregular patterns. PDF documents that are poorly structured and fail data standards will go to the "pdf_fail" folder.
+# Some PDFs have ill-defined structures and irregular patterns. PDF documents that are poorly structured and fail data standards will go to the "pdf_fail" folder.
 
 # Configuração:
 In et_main.py it is possible to change the value of the variables "jogo" (game) and "ano" (year), the structure and data type of PDF may vary depending on the season (year), in game 140 of the 2023 season the loop stops.
