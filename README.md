@@ -23,7 +23,7 @@ Run:<br>
 In et_main.py it is possible to change the value of the variables "jogo" (game) and "ano" (year), the structure and data type of PDF may vary depending on the season (year), in game 140 of the 2023 season the loop stops.
 In mongo_load.py host=<IP_MongoDB>
 
-# Results
+# RESULTS
 ![cabecalho_pdf](https://github.com/gconelhero/brasileiro/assets/26088216/5ea5d325-3b7c-4341-8362-7ed69d79f102)
 ```
 {
