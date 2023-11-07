@@ -89,18 +89,14 @@ class ObjetoJogo:
             cronologia['Acréscimo 2T'] = 'Não Houve'
         lista_cronologia.pop(0)
         tmp_str = lista_cronologia[0].split('Tempo: ')[-1].split('Resultado')[0].replace(' ', '')
-        cronologia['Resultado 1T'] = {'Mandante': int(tmp_str.split('X')[0]),
-                                      'Visitante': int(tmp_str.split('X')[-1])
-                                      }
+        cronologia['Resultado 1T'] =  int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])
         tmp_str = lista_cronologia[0].split('Final: ')[-1].replace(' ', '')
-        cronologia['Resultado Final'] = {'Mandante': int(tmp_str.split('X')[0]),
-                                         'Visitante': int(tmp_str.split('X')[-1])
-                                         }
+        cronologia['Resultado Final'] = int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])
         lista_cronologia.pop(0)
         cronologia['jogo_numero'] = cabecalho['jogo_n']
         cronologia['data'] = cabecalho['data']
         arbitragem['jogo_numero'] = cabecalho['jogo_n']
-        arbitragem['data'] = cabecalho['jogo_n']
+        arbitragem['data'] = cabecalho['data']
         mandante = cabecalho['jogo'].split(' X ')[0]
         visitante = cabecalho['jogo'].split(' X ')[-1]
         comissao[mandante]['equipe'] = mandante
@@ -110,8 +106,6 @@ class ObjetoJogo:
         comissao[visitante]['jogo_numero'] = cabecalho['jogo_n']
         comissao[visitante]['data'] = cabecalho['data']
         comissao = [comissao[mandante], comissao[visitante]]
-        cronologia['Resultado 1T'] = cronologia['Resultado 1T']['Mandante'], cronologia['Resultado 1T']['Visitante']
-        cronologia['Resultado Final'] = cronologia['Resultado Final']['Mandante'], cronologia['Resultado Final']['Visitante']
         jogadores_m = []
         for k, v in jogadores[mandante].items():
             jogador = {'id_cbf': v['id_cbf'], 
@@ -125,12 +119,12 @@ class ObjetoJogo:
                        }
             jogadores_m.append(jogador)
         jogadores_v = []
-        for k, v in jogadores[mandante].items():
+        for k, v in jogadores[visitante].items():
             jogador = {'id_cbf': v['id_cbf'], 
                         'nome': v['nome'], 
                         'apelido': v['apelido'], 
                         'numero': int(k), 
-                        'equipe': mandante, 
+                        'equipe': visitante, 
                         'T/R': v['T/R'], 
                         'data': cabecalho['data'], 
                         'jogo_numero': cabecalho['jogo_n']
@@ -163,6 +157,7 @@ class ObjetoJogo:
                 'arbitragem': arbitragem, 
                 'cronologia': cronologia, 
                 'jogadores': jogadores_m, 
+                'comissao': comissao, 
                 'gols': gols, 
                 'cartoes_amarelos': cart_amar, 
                 'cartoes_vermelhos': cart_ver, 

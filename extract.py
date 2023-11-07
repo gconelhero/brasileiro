@@ -293,9 +293,9 @@ class ExtractPdf:
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
                 if self.jogadores[equipe][num]:
-                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'motivo': motivo})
+                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'motivo': motivo, 'equipe': equipe})
                 else:
-                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'motivo': motivo})
+                    cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'motivo': motivo, 'equipe': equipe})
                 num = None
             else:
                 pass

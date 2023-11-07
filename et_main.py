@@ -46,10 +46,9 @@ class Etl:
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
 
-import random
 if __name__ == '__main__':
     jogo = 1
-    ano = 2014
+    ano = 2018
     while jogo < 140 and ano < 2023:
         etl = Etl(ano, jogo)
         if jogo == 380:
