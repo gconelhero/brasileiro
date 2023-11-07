@@ -5,7 +5,7 @@ Objectives:
 * Extract, transform and load the data contained in the Brazilian championship scores for further analysis.
 * Create an API to share this data with other applications.
 
-![2](https://github.com/gconelhero/brasileiro/assets/26088216/561b8f9d-89b4-4cbe-affa-1a69c31eb367)
+![2](https://github.com/gconelhero/brasileiro/assets/26088216/3ecf6a2f-5b07-4373-b933-8948e760b7f0)
 
 Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
