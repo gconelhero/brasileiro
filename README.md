@@ -138,6 +138,7 @@ In mongo_load.py host=<IP_MongoDB>
   },
   "minuto": "00:09:00",
   "1T/2T": "2T",
+  "tipo": "NR", 
   "id_cbf": 292942,
   "equipe": "Grêmio / RS",
   "jogo_numero": 1,
