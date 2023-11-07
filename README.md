@@ -11,9 +11,6 @@ Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
 
-Change connection parameters in `mongo_load.py`:<br>
-`host='<IP_MongoDB>'`<br>
-
 Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
 `cd brasileiro`<br>
@@ -24,4 +21,4 @@ Run:<br>
 
 # CONFIG:
 In et_main.py it is possible to change the value of the variables "jogo" (game) and "ano" (year), the structure and data type of PDF may vary depending on the season (year), in game 140 of the 2023 season the loop stops.
-
+In mongo_load.py host=<IP_MongoDB>
