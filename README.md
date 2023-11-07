@@ -4,7 +4,6 @@ Project related to the study of data analysis with Python and Mongo.
 Objectives:
 * Extract, transform and load the data contained in the Brazilian championship scores for further analysis.
 * Create an API to share this data with other applications.
-![brasileiro_diagrama drawio]()
 
 ![2](https://github.com/gconelhero/brasileiro/assets/26088216/561b8f9d-89b4-4cbe-affa-1a69c31eb367)
 
