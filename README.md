@@ -33,8 +33,15 @@ sudo systemctl daemon-reload &&
 sudo systemctl enable mongod.service &&
 sudo systemctl start mongod.service
 ```
-
-Run:<br>
+Run MongoDB (terminal):
+```
+mongosh
+```
+Create "brasileiro" database:
+```
+use brasileiro
+```
+Run brasileiro:
 ```
 git clone https://github.com/gconelhero/brasileiro
 ```
