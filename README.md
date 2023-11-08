@@ -35,10 +35,18 @@ sudo systemctl start mongod.service
 ```
 
 Run:<br>
-`git clone https://github.com/gconelhero/brasileiro`<br>
-`cd brasileiro`<br>
-`python3 -m pip install -r requirements.txt`<br>
-`python3 et_main.py`<br>
+```
+git clone https://github.com/gconelhero/brasileiro
+```
+```
+cd brasileiro
+```
+```
+python3 -m pip install -r requirements.txt```
+```
+```
+python3 et_main.py
+```
 
 ## Some PDFs have ill-defined structures and irregular patterns. PDF documents that are poorly structured and fail data standards will go to the "pdf_fail" folder.
 
