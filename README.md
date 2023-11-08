@@ -37,13 +37,13 @@ Run MongoDB (terminal):
 ```
 mongosh
 ```
-To use a graphical interface (MongoDB Compass):
-```
-https://www.mongodb.com/try/download/compass
-```
 Create "brasileiro" database:
 ```
 use brasileiro
+```
+To use a graphical interface (MongoDB Compass):
+```
+https://www.mongodb.com/try/download/compass
 ```
 Run brasileiro:
 ```
