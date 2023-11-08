@@ -10,6 +10,12 @@ Objectives:
 Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
+```
+wget -qO - https://www.mongodb.org/static/pgp/server-5.0.asc | sudo apt-key add -
+```
+```
+  
+```
 
 Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
