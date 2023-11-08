@@ -8,8 +8,8 @@ Objectives:
 ![2](https://github.com/gconelhero/brasileiro/assets/26088216/3ecf6a2f-5b07-4373-b933-8948e760b7f0)
 
 Install and config MongoDB:<br>
-![https://docs.mongodb.com/manual/installation/]<br>
-![https://docs.mongodb.com/manual/reference/configuration-options/]
+`https://docs.mongodb.com/manual/installation/`
+`https://docs.mongodb.com/manual/reference/configuration-options/`
 
 MongoDB-6.0.11 for Ubuntu-22.04.03-LTS:
 ```
