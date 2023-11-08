@@ -16,6 +16,9 @@ MongoDB-6.0.11 for Ubuntu-22.04.03-LTS:
 sudo apt-get install gnupg curl
 ```
 ```
+sudo apt-get install default-jdk
+```
+```
 curl -fsSL https://pgp.mongodb.com/server-6.0.asc |
 sudo gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
 ```
