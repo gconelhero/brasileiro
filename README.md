@@ -37,6 +37,10 @@ Run MongoDB (terminal):
 ```
 mongosh
 ```
+To use a graphical interface
+```
+https://www.mongodb.com/try/download/shell
+```
 Create "brasileiro" database:
 ```
 use brasileiro
