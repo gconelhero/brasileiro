@@ -28,6 +28,11 @@ sudo apt-get update
 ```
 sudo apt-get install -y mongodb-org
 ```
+```
+sudo systemctl daemon-reload &&
+sudo systemctl enable mongod.service &&
+sudo systemctl start mongod.service
+```
 
 Run:<br>
 `git clone https://github.com/gconelhero/brasileiro`<br>
