@@ -10,6 +10,7 @@ Objectives:
 Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
 `https://docs.mongodb.com/manual/reference/configuration-options/`<br>
+
 MongoDB-5.0.7 for Ubuntu-22.04.03-LTS:
 ```
 sudo apt-get install gnupg curl
