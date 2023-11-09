@@ -5,7 +5,7 @@ Objectives:
 * Extract, transform and load the data contained in the Brazilian championship summary for further analysis.
 * Create an API to share this data with other applications.
 
-![2](https://github.com/gconelhero/brasileiro/assets/26088216/3ecf6a2f-5b07-4373-b933-8948e760b7f0)
+![2](https://github.com/gconelhero/brasileiro/assets/26088216/b3fa2bd3-bfa0-435f-a79a-6cde629a3cf1)
 
 Install and config MongoDB:<br>
 `https://docs.mongodb.com/manual/installation/`<br>
