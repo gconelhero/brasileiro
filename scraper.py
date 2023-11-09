@@ -13,7 +13,7 @@ class Scraper:
     def __init__(self, ano, jogo):
         dirs = os.listdir(".")
         self.ano = ano
-        self.jogo = jogo 
+        self.jogo = jogo
         try:
             if "PDFs" not in dirs:
                 os.mkdir("./PDFs")
@@ -101,16 +101,17 @@ class Scraper:
                         flag = True
                         break
             if flag:
+                idade = ano_sumula.year - nascimento.year
                 jogador = {'apelido': apelido, 
                             'nome': nome,
-                            'nascimento': nascimento, 
+                            'nascimento': nascimento.isoformat(), 
                             'partidas': jogador_partidas, 
                             'gols': jogador_gols,
                             'amarelos': jogador_amarelos,
                             'vermelhos': jogador_vermelhos, 
-                            'clube': 'depois',
-                            'ano': ano_sumula,
-                            'idade': ano_sumula.year - nascimento.year, 
+                            'equipe': clube,
+                            'ano': ano_sumula.isoformat(),
+                            'idade': int(idade), 
                             'id_cbf': id_jogador
                             }
         except:

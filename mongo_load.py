@@ -5,8 +5,11 @@ from pymongo import MongoClient
 class DataBase():
 
     def __init__(self, collection):
+        self.collection = collection
         try:
             self.mongo_ins = MongoClient(host='0.0.0.0',
+                                        #username='brasileiro',
+                                        #password='brasileiro',
                                         port=27017,
                                         maxPoolSize=200)
             self.database_name = 'brasileiro'
@@ -26,3 +29,9 @@ class DataBase():
             with open('./logs/log_mongo_client.txt',  'a') as log:
                 traceback.print_exc(file=log)
                 traceback.print_exc(file=sys.stdout)
+
+    def query_db(self, id_cbf):
+        query = {'id_cbf': id_cbf}
+        find_player = self.database.find_one(query)
+
+        return find_player

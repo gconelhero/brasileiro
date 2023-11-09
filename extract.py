@@ -7,6 +7,7 @@ import fitz
 import tabula
 
 from scraper import Scraper
+from mongo_load import DataBase
 
 reject = ['Arbitragem', 'Cronologia', '1º Tempo', '2º Tempo', 
             'Relação de Jogadores',
@@ -90,6 +91,8 @@ class ExtractPdf:
         mandante_df = pd.DataFrame(mandante_plantel[0]).dropna()
         visitante_df = pd.DataFrame(visitante_plantel[0]).dropna()
         self.jogadores = {self.mandante: {}, self.visitante: {}}
+        database = DataBase(f'jogadores_ano_{self.data.year}')
+        jogadores_ano = []
         for i, row in mandante_df.iterrows():
             numero = int(row['No'])
             apelido = row['Apelido']
@@ -106,8 +109,15 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            scraper = Scraper(self.data.year, None)
-            jogador = scraper.jogador(cbf, apelido, nome)
+            query = database.query_db(cbf)
+            if query == None:
+                scraper = Scraper(self.data.year, None)
+                jogador = scraper.jogador(cbf, apelido, nome)
+                jogador_ano = jogador
+                jogador_ano['equipe'] = self.mandante
+                jogadores_ano.append(jogador_ano)
+            else:
+                jogador = query
             self.jogadores[self.mandante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
                                                     'T/R': t_r, 
@@ -130,14 +140,23 @@ class ExtractPdf:
                 t_r = 'T'
             p_a = row['P/A']
             cbf = int(row['CBF'])
-            scraper = Scraper(self.data.year, None)
-            jogador = scraper.jogador(cbf, apelido, nome)
+            query = database.query_db(cbf)
+            if query == None:
+                scraper = Scraper(self.data.year, None)
+                jogador = scraper.jogador(cbf, apelido, nome)
+                jogador_ano = jogador
+                jogador_ano['equipe'] = self.visitante
+                jogadores_ano.append(jogador_ano)
+            else:
+                jogador = query
             self.jogadores[self.visitante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
                                                     'T/R': t_r, 
                                                     'P/A': p_a, 
                                                     'id_cbf': jogador['id_cbf']
                                                     }
+
+        self.jogadores['jogadores_ano'] = jogadores_ano
 
         return self.jogadores
 
@@ -214,7 +233,6 @@ class ExtractPdf:
             gols_tabela = tabula.read_pdf(arquivo, pages=f'{page_tabula}', area=gols_area)
             gols_df = pd.DataFrame(gols_tabela[0]).dropna()
         except:
-            print('Não houve gols')
             return gols
         for i, row in gols_df.iterrows():
             if re.search(r'\+', row['Tempo']):
@@ -233,7 +251,7 @@ class ExtractPdf:
                 if re_equipe:
                     equipe = x
                     id_cbf = self.jogadores[equipe][num]['id_cbf']
-            gols.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': id_cbf, 'equipe': equipe})
+            gols.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'tipo': tipo, 'id_cbf': id_cbf, 'equipe': equipe})
 
         return gols
 

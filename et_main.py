@@ -11,6 +11,8 @@ from mongo_load import DataBase
 class Etl:
 
     def __init__(self, ano, jogo):
+        self.ano = ano
+        self.jogo = jogo
         scraper = Scraper(ano, jogo)
         self.arquivo = scraper.pdf()
 
@@ -31,7 +33,10 @@ class Etl:
             jogo = ObjetoJogo(cabecalho, arbitragem, cronologia, jogadores, comissao, gols, cartoes_amarelos, cartoes_vermelhos, substituicoes)
             jogo = jogo.transform()
             for k, v in jogo.items():
-                mongo_load = DataBase(k)
+                if k == 'jogadores_ano':
+                    mongo_load = DataBase(f'jogadores_ano_{self.ano}')
+                else:
+                    mongo_load = DataBase(k)
                 objeto = v
                 if type(objeto) == list:
                     for i in v:                        
@@ -47,13 +52,17 @@ class Etl:
                 traceback.print_exc(file=sys.stdout)
 
 if __name__ == '__main__':
-    jogo = 1
+    jogo = 142
     ano = 2018
-    while jogo < 140 and ano < 2023:
+    scraper = True
+    while scraper:
         etl = Etl(ano, jogo)
         if jogo == 380:
             jogo = 1
             ano += 1
         else:
             jogo += 1
-        etl.etMain()
+        if ano == 2023:
+            scraper = False
+        else:
+            etl.etMain()

@@ -89,9 +89,9 @@ class ObjetoJogo:
             cronologia['Acréscimo 2T'] = 'Não Houve'
         lista_cronologia.pop(0)
         tmp_str = lista_cronologia[0].split('Tempo: ')[-1].split('Resultado')[0].replace(' ', '')
-        cronologia['Resultado 1T'] =  int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])
+        cronologia['Resultado 1T'] =  [int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])]
         tmp_str = lista_cronologia[0].split('Final: ')[-1].replace(' ', '')
-        cronologia['Resultado Final'] = int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])
+        cronologia['Resultado Final'] = [int(tmp_str.split('X')[0]), int(tmp_str.split('X')[-1])]
         lista_cronologia.pop(0)
         cronologia['jogo_numero'] = cabecalho['jogo_n']
         cronologia['data'] = cabecalho['data']
@@ -152,7 +152,6 @@ class ObjetoJogo:
                 'estadio': cabecalho['estadio'],
                 }
         jogadores_m.extend(jogadores_v)
-
         return {'jogo': jogo, 
                 'arbitragem': arbitragem, 
                 'cronologia': cronologia, 
@@ -161,5 +160,6 @@ class ObjetoJogo:
                 'gols': gols, 
                 'cartoes_amarelos': cart_amar, 
                 'cartoes_vermelhos': cart_ver, 
-                'substituicoes': substituicao
+                'substituicoes': substituicao, 
+                'jogadores_ano': jogadores['jogadores_ano']
                 }
