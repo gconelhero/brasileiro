@@ -47,7 +47,6 @@ class Scraper:
                         jogo_nulo = 0
 
                         return arquivo
-
                 except:
                     jogo_nulo += 1
                     os.remove(f'./PDFs/jogo_{jogo}_{ano}.pdf')
