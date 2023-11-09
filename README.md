@@ -56,7 +56,7 @@ git clone https://github.com/gconelhero/brasileiro
 cd brasileiro
 ```
 ```
-python3 -m pip install -r requirements.txt```
+python3 -m pip install -r requirements.txt
 ```
 ```
 python3 et_main.py
