@@ -52,7 +52,7 @@ class Etl:
                 traceback.print_exc(file=sys.stdout)
 
 if __name__ == '__main__':
-    jogo = 142
+    jogo = 1
     ano = 2018
     scraper = True
     while scraper:

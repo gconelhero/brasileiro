@@ -310,7 +310,11 @@ class ExtractPdf:
             elif re.search(r'^Motivo: \D*', i):
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
-                if self.jogadores[equipe][num]:
+                try:
+                    chave_jogador = self.jogadores[equipe][num]
+                except:
+                    chave_jogador = None
+                if chave_jogador:
                     cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'motivo': motivo, 'equipe': equipe})
                 else:
                     cartoes_amarelos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'motivo': motivo, 'equipe': equipe})
@@ -378,7 +382,11 @@ class ExtractPdf:
             elif re.search(r'^Motivo: \D*', i):
                 motivo = re.search(r'^Motivo: \D*', i).group().split(': ')[-1]
             if num and tempo and nome and motivo:
-                if self.jogadores[equipe][num]:
+                try:
+                    chave_jogador = self.jogadores[equipe][num]
+                except:
+                    chave_jogador = None
+                if chave_jogador:
                     cartoes_vermelhos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': self.jogadores[equipe][num]['id_cbf'], 'condicao': condicao, 'motivo': motivo, 'equipe': equipe}) 
                 else:
                     cartoes_vermelhos.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'id_cbf': num, 'condicao': condicao, 'motivo': motivo, 'equipe': equipe})
