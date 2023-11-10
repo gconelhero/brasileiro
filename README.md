@@ -63,6 +63,7 @@ python3 et_main.py
 ```
 
 ## Some PDFs have ill-defined structures and irregular patterns. PDF documents that are poorly structured and fail data standards will go to the "pdf_fail" folder.
+### Example:
 ![exemplo](https://github.com/gconelhero/brasileiro/assets/26088216/3a445ed8-6eda-4195-99a6-8d1469cb62d1)
 
 # CONFIG:
