@@ -63,6 +63,7 @@ python3 et_main.py
 ```
 
 ## Some PDFs have ill-defined structures and irregular patterns. PDF documents that are poorly structured and fail data standards will go to the "pdf_fail" folder.
+![exemplo](https://github.com/gconelhero/brasileiro/assets/26088216/3a445ed8-6eda-4195-99a6-8d1469cb62d1)
 
 # CONFIG:
 In et_main.py it is possible to change the value of the variables "jogo" (game) and "ano" (year), the structure and data type of PDF may vary depending on the season (year), in game 140 of the 2023 season the loop stops.
