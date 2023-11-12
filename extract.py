@@ -78,7 +78,6 @@ class ExtractPdf:
         arquivo = self.arquivo
         arquivo_fitz = fitz.open(arquivo)
         page = arquivo_fitz.load_page(0)
-        pdf = page.get_text()
         # fitz.area = (left, top, right, bottom)
         num = page.search_for('Nº')
         cbf = page.search_for('CBF')
@@ -118,12 +117,14 @@ class ExtractPdf:
                 jogadores_ano.append(jogador_ano)
             else:
                 jogador = query
+                
             self.jogadores[self.mandante][numero] = {'apelido': jogador['apelido'], 
                                                     'nome': jogador['nome'], 
                                                     'T/R': t_r, 
                                                     'P/A': p_a, 
                                                     'id_cbf': jogador['id_cbf']
                                                     }
+
         for i, row in visitante_df.iterrows():
             numero = int(row['No'])
             apelido = row['Apelido']
@@ -235,6 +236,8 @@ class ExtractPdf:
         except:
             return gols
         for i, row in gols_df.iterrows():
+            if len(str(row['Tempo'])) == 1:
+                row['Tempo'] = f"+{str(row['Tempo'])}:00"
             if re.search(r'\+', row['Tempo']):
                 minutos_acrescimo = re.search(r'\d+', row['Tempo']).group()
                 minutos_acrescimo = 45 + int(minutos_acrescimo)
@@ -247,11 +250,17 @@ class ExtractPdf:
             nome = ''
             equipe = row['Equipe']
             for x in self.jogadores.keys():
-                re_equipe = re.search(equipe.split('/')[0], x)
+                re_equipe = re.search(equipe.split('/')[0], x) 
                 if re_equipe:
-                    equipe = x
-                    id_cbf = self.jogadores[equipe][num]['id_cbf']
-            gols.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'tipo': tipo, 'id_cbf': id_cbf, 'equipe': equipe})
+                    re_equipe = re_equipe.group()
+                    if re_equipe in self.mandante and re_equipe in self.visitante:
+                        equipe = row['Equipe'].replace('/', ' / ')
+                    else:
+                        equipe = x
+            if minutos:
+                id_cbf = self.jogadores[equipe][num]['id_cbf']
+                gols.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'tipo': tipo, 'id_cbf': id_cbf, 'equipe': equipe})
+                minutos = None
 
         return gols
 
@@ -272,13 +281,16 @@ class ExtractPdf:
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Cartões Amarelos')+1:paginas.index('Cartões Vermelhos')]
         for index, i in enumerate(paginas):
-            if re.search(r'^\d+:\d+', i) and len(i) < 7:
+            if re.search(r'^\+?\d+:\d+', i) and len(i) < 7:
                 minutos = i
                 if re.search(r'^\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
                     minutos_acrescimo = 45 + int(minutos_acrescimo)
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
+                    minutos = minutos.replace(' ', '')
+                    if len(minutos.replace(' ', '')) < 5 and minutos[0] != '+':
+                        minutos = f'0{minutos}'
                     minutos = datetime.strptime(minutos, '%M:%S').time()
                 if re.search(r'\dT', paginas[index + 1]):
                     tempo = paginas[index + 1]
@@ -341,13 +353,16 @@ class ExtractPdf:
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Cartões Vermelhos')+1:paginas.index('Ocorrências / Observações')]
         for index, i in enumerate(paginas):
-            if re.search(r'\d+:\d+', i) and len(i) < 7:
+            if re.search(r'\+?\d+:\d+', i) and len(i) < 7:
                 minutos = i
                 if re.search(r'\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
                     minutos_acrescimo = 45 + int(minutos_acrescimo)
                     minutos = datetime.strptime(f'{minutos_acrescimo}:00', '%M:%S').time()
                 else:
+                    minutos = minutos.replace(' ', '')
+                    if len(minutos) < 5 and minutos[0] != '+':
+                        minutos = f'0{minutos}'
                     minutos = datetime.strptime(minutos, '%M:%S').time()
                 if re.search(r'\dT', paginas[index + 1]):
                     tempo = paginas[index + 1]
@@ -414,7 +429,7 @@ class ExtractPdf:
         paginas = paginas.splitlines()
         paginas = paginas[paginas.index('Substituições')+1:]
         for index, i in enumerate(paginas):
-            if re.search(r'^\d+:\d+', i) and len(i) < 7:
+            if re.search(r'^\+?\d+:\d+', i) and len(i) < 7:
                 minutos = i
                 if re.search(r'\+\d+:\d+', i):
                     minutos_acrescimo = re.search(r'\d+', i).group()
@@ -428,18 +443,19 @@ class ExtractPdf:
                     tempo = paginas[index + 1]
                 if minutos:
                     num_entrou = int(paginas[index + 3].split(' - ')[0])
-                    nome_entrou = paginas[index + 3].split(' - ')[-1]
                     num_saiu = int(paginas[index + 4].split(' - ')[0])
                     nome_saiu = paginas[index + 4].split(' - ')[-1]
                 if re.search(paginas[index + 2].split('/')[0], self.mandante):
-                    nome_entrou = self.jogadores[self.mandante][num_entrou]['nome']
-                    nome_saiu = self.jogadores[self.mandante][num_saiu]['nome']
                     equipe = self.mandante
                 elif re.search(paginas[index + 2].split('/')[0], self.visitante):
-                    nome_entrou = self.jogadores[self.visitante][num_entrou]['nome']
-                    nome_saiu = self.jogadores[self.visitante][num_saiu]['nome']
                     equipe = self.visitante
-            if equipe and num_entrou and tempo and nome_entrou:
+                if equipe:
+                    for x in self.jogadores.keys():
+                        re_equipe = re.search(paginas[index + 2].replace('/', ' / '), x)
+                        if re_equipe:
+                            equipe = x
+                            break
+            if equipe and num_entrou and tempo:
                 id_cbf = self.jogadores[equipe][num_entrou]['id_cbf']
                 id_cbf_ = self.jogadores[equipe][num_saiu]['id_cbf']
                 substituicoes_.append({'minuto': minutos.isoformat(), '1T/2T': tempo, 'entrou': id_cbf, 'saiu': id_cbf_, 'equipe': equipe})

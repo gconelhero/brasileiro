@@ -47,6 +47,7 @@ class Scraper:
                         jogo_nulo = 0
 
                         return arquivo
+
                 except:
                     jogo_nulo += 1
                     os.remove(f'./PDFs/jogo_{jogo}_{ano}.pdf')
@@ -85,34 +86,20 @@ class Scraper:
         jogador_gols = int(re.search(r'\d+', soup.find('div', class_='dentro-campo__item dentro-campo__item--gols').text).group())
         jogador_amarelos = int(re.search(r'\d+', soup.find('div', class_='dentro-campo__item dentro-campo__item--cartaoamarelo').text).group())
         jogador_vermelhos = int(re.search(r'\d+', soup.find('div', class_='dentro-campo__item dentro-campo__item--cartaovermelho').text).group())
-        nome_split = ' '.join(nome_sumula.split(' '))
-        nome_i = ''
         try:
-            if re.search(unidecode(apelido_sumula).casefold(), unidecode(apelido).casefold()):
-                flag = True
-            elif re.search(unidecode(nome_sumula).casefold(), unidecode(nome).casefold()):
-                flag = True
-            else:
-                for i in nome_split:
-                    nome_i += i
-                    nome_regex = re.search(unidecode(nome_i).casefold(), unidecode(nome).casefold())
-                    if len(nome_regex.group().split(' ')) > 2 and nome_regex:
-                        flag = True
-                        break
-            if flag:
-                idade = ano_sumula.year - nascimento.year
-                jogador = {'apelido': apelido, 
-                            'nome': nome,
-                            'nascimento': nascimento.isoformat(), 
-                            'partidas': jogador_partidas, 
-                            'gols': jogador_gols,
-                            'amarelos': jogador_amarelos,
-                            'vermelhos': jogador_vermelhos, 
-                            'equipe': clube,
-                            'ano': ano_sumula.isoformat(),
-                            'idade': int(idade), 
-                            'id_cbf': id_jogador
-                            }
+            idade = ano_sumula.year - nascimento.year
+            jogador = {'apelido': apelido, 
+                        'nome': nome,
+                        'nascimento': nascimento.isoformat(), 
+                        'partidas': jogador_partidas, 
+                        'gols': jogador_gols,
+                        'amarelos': jogador_amarelos,
+                        'vermelhos': jogador_vermelhos, 
+                        'equipe': clube,
+                        'ano': ano_sumula.isoformat(),
+                        'idade': int(idade), 
+                        'id_cbf': id_jogador
+                        }
         except:
             with open('./logs/log_scrap.txt',  'a') as log:
                 log.write(f"\n{self.jogo}_{self.ano}_Scraper_API:\n")

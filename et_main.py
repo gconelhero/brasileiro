@@ -52,8 +52,8 @@ class Etl:
                 traceback.print_exc(file=sys.stdout)
 
 if __name__ == '__main__':
-    jogo = 1
-    ano = 2018
+    jogo = 329
+    ano = 2023
     scraper = True
     while scraper:
         etl = Etl(ano, jogo)
@@ -61,8 +61,6 @@ if __name__ == '__main__':
             jogo = 1
             ano += 1
         else:
-            jogo += 1
-        if ano == 2023:
-            scraper = False
-        else:
-            etl.etMain()
+            jogo += 1 
+        etl.etMain()
+        #scraper = False
